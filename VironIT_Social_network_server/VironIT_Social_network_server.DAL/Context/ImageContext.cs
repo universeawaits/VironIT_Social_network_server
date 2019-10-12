@@ -38,7 +38,9 @@ namespace VironIT_Social_network_server.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Image>().HasKey(image => image.Id);
 
+            modelBuilder.Entity<Image>().Property(image => image.RelativePath).IsRequired(true);
         }
     }
 }

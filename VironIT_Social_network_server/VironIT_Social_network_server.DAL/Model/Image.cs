@@ -2,6 +2,6 @@
 {
     public class Image : BaseEntity
     {
-        public string AbsolutePath { get; set; }
+        public string RelativePath { get; set; }
     }
 }
