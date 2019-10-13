@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VironIT_Social_network_server.DAL", "VironIT_Social_network_server.DAL\VironIT_Social_network_server.DAL.csproj", "{A417A569-40E1-4122-9089-5492EC9B3C08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VironIT_Social_network_server.DAL", "VironIT_Social_network_server.DAL\VironIT_Social_network_server.DAL.csproj", "{A417A569-40E1-4122-9089-5492EC9B3C08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VironIT_Social_network_server.WEB", "VironIT_Social_network_server.WEB\VironIT_Social_network_server.WEB.csproj", "{2FCD6FCB-FF9E-44C8-8201-5A553E7945B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{A417A569-40E1-4122-9089-5492EC9B3C08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A417A569-40E1-4122-9089-5492EC9B3C08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A417A569-40E1-4122-9089-5492EC9B3C08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FCD6FCB-FF9E-44C8-8201-5A553E7945B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FCD6FCB-FF9E-44C8-8201-5A553E7945B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FCD6FCB-FF9E-44C8-8201-5A553E7945B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FCD6FCB-FF9E-44C8-8201-5A553E7945B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
