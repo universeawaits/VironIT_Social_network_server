@@ -27,7 +27,7 @@ namespace VironIT_Social_network_server.WEB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>(
-                options => options.UseMySQL(Configuration.GetConnectionString("UsersConnection")));
+                options => options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")));
 
             services.AddCors();
 

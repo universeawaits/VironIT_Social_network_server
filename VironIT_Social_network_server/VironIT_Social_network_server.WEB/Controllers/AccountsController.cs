@@ -64,7 +64,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
             Response.ContentType = "application/json";
             await Response.WriteAsync(JsonConvert.SerializeObject(
-                response, 
+                response,
                 new JsonSerializerSettings { Formatting = Formatting.Indented })
                 );
         }
