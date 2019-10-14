@@ -1,5 +1,8 @@
 using System.Text;
 using System.Threading.Tasks;
+
+using AutoMapper;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+
+using VironIT_Social_network_server.BLL;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 
@@ -80,6 +85,7 @@ namespace VironIT_Social_network_server.WEB
             );
 
             services.AddSignalR();
+            services.AddAutoMapper(typeof(BLLMapperProfile));
             services.AddControllers();
         }
 

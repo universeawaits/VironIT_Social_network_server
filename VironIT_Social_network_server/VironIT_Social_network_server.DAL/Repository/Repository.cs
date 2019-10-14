@@ -11,11 +11,11 @@ using VironIT_Social_network_server.DAL.Model;
 
 namespace VironIT_Social_network_server.DAL.Repository
 {
-    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> where TEntity : BaseEntity where TContext : DbContext
+    public class Repository<TEntity, TContext> : IRepository<TEntity> where TEntity : Entity where TContext : DbContext
     {
         private readonly TContext context;
 
-        public BaseRepository(TContext context)
+        public Repository(TContext context)
         {
             this.context = context;
         }

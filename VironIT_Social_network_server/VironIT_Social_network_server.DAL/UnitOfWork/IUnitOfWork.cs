@@ -10,7 +10,7 @@ namespace VironIT_Social_network_server.DAL.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        IBaseRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
+        IRepository<TEntity> Repository<TEntity>() where TEntity : Entity;
 
         Task SaveAsync();
     }

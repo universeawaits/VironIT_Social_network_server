@@ -25,7 +25,7 @@ namespace VironIT_Social_network_server.DAL.UnitOfWork
             Context.SaveChanges();
         }
 
-        public IBaseRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
+        public IRepository<TEntity> Repository<TEntity>() where TEntity : Entity
         {
             if (repositories == null)
             {
@@ -36,10 +36,10 @@ namespace VironIT_Social_network_server.DAL.UnitOfWork
 
             if (!repositories.ContainsKey(type))
             {
-                repositories.Add(type, new BaseRepository<TEntity, TContext>(Context));
+                repositories.Add(type, new Repository<TEntity, TContext>(Context));
             }
 
-            return (BaseRepository<TEntity, TContext>)repositories[type];
+            return (Repository<TEntity, TContext>)repositories[type];
         }
 
         public async Task SaveAsync()
