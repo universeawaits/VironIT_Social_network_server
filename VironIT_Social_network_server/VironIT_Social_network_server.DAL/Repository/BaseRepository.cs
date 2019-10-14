@@ -6,40 +6,39 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
-using VironIT_Social_network_server.DAL.Context;
 using VironIT_Social_network_server.DAL.Model;
 
 
 namespace VironIT_Social_network_server.DAL.Repository
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> where TEntity : BaseEntity where TContext : DbContext
     {
-        private readonly ImageContext _db;
+        private readonly TContext context;
 
-        public BaseRepository(ImageContext db)
+        public BaseRepository(TContext context)
         {
-            _db = db;
+            this.context = context;
         }
 
-        public async Task CreateAsync(T item)
+        public async Task CreateAsync(TEntity item)
         {
-            await _db.Set<T>().AddAsync(item);
+            await context.Set<TEntity>().AddAsync(item);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await _db.Set<T>().FindAsync(id);
+            var entity = await context.Set<TEntity>().FindAsync(id);
             if (entity != null)
             {
-                _db.Set<T>().Remove(entity);
+                context.Set<TEntity>().Remove(entity);
             }
         }
 
-        public IQueryable<T> GetList(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public IQueryable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<T> query = _db.Set<T>();
+            IQueryable<TEntity> query = context.Set<TEntity>();
 
-            foreach (Expression<Func<T, object>> include in includes)
+            foreach (Expression<Func<TEntity, object>> include in includes)
                 query = query.Include(include);
 
             var entities = query.Where(predicate);
@@ -47,11 +46,11 @@ namespace VironIT_Social_network_server.DAL.Repository
             return entities;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(params Expression<Func<T, object>>[] includes)
+        public async Task<IEnumerable<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<T> query = _db.Set<T>();
+            IQueryable<TEntity> query = context.Set<TEntity>();
 
-            foreach (Expression<Func<T, object>> include in includes)
+            foreach (Expression<Func<TEntity, object>> include in includes)
                 query = query.Include(include);
 
             var entities = await query.ToListAsync();
@@ -59,26 +58,26 @@ namespace VironIT_Social_network_server.DAL.Repository
             return entities;
         }
 
-        public void Update(T item)
+        public void Update(TEntity item)
         {
-            _db.Entry(item).State = EntityState.Modified;
+            context.Entry(item).State = EntityState.Modified;
         }
 
-        public async Task<T> GetById(int id, params Expression<Func<T, object>>[] includes)
+        public async Task<TEntity> GetById(int id, params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<T> query = _db.Set<T>();
+            IQueryable<TEntity> query = context.Set<TEntity>();
 
-            foreach (Expression<Func<T, object>> include in includes)
+            foreach (Expression<Func<TEntity, object>> include in includes)
                 query = query.Include(include);
 
             return await query.SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<T> GetEntityByFilter(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        public async Task<TEntity> GetEntityByFilter(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
         {
-            IQueryable<T> query = _db.Set<T>();
+            IQueryable<TEntity> query = context.Set<TEntity>();
 
-            foreach (Expression<Func<T, object>> include in includes)
+            foreach (Expression<Func<TEntity, object>> include in includes)
                 query = query.Include(include);
 
             return await query.SingleOrDefaultAsync(predicate);

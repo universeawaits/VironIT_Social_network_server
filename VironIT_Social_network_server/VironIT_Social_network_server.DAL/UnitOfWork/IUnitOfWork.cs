@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
 
 using VironIT_Social_network_server.DAL.Model;
@@ -12,5 +13,10 @@ namespace VironIT_Social_network_server.DAL.UnitOfWork
         IBaseRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
 
         Task SaveAsync();
+    }
+
+    public interface IUnitOfWork<TContext> : IUnitOfWork where TContext : DbContext
+    {
+        TContext Context { get; }
     }
 }

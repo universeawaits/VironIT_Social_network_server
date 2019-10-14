@@ -28,6 +28,7 @@ namespace VironIT_Social_network_server.DAL.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            // ????
             if (!optionsBuilder.IsConfigured)
             {
                 string connectionString = _env.IsProduction() ? _configuration["ConnectionStrings:Prod"]

@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using VironIT_Social_network_server.DAL.Context;
+using Microsoft.EntityFrameworkCore;
+
 using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.Repository;
 
 
 namespace VironIT_Social_network_server.DAL.UnitOfWork
 {
-    public class ImageUnit : IUnitOfWork
+    public class UnitOfWork<TContext> : IUnitOfWork<TContext> where TContext : DbContext
     {
-        private bool disposed;
-
-        private readonly ImageContext context;
+        public TContext Context { get; }
         private Dictionary<string, object> repositories;
 
-        public ImageUnit(ImageContext context)
+        public UnitOfWork(TContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
         public void Save()
         {
-            context.SaveChanges();
+            Context.SaveChanges();
         }
 
         public IBaseRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
@@ -37,20 +36,20 @@ namespace VironIT_Social_network_server.DAL.UnitOfWork
 
             if (!repositories.ContainsKey(type))
             {
-                repositories.Add(type, new BaseRepository<TEntity>(context));
+                repositories.Add(type, new BaseRepository<TEntity, TContext>(Context));
             }
 
-            return (BaseRepository<TEntity>)repositories[type];
+            return (BaseRepository<TEntity, TContext>)repositories[type];
         }
 
         public async Task SaveAsync()
         {
-            await context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public void Dispose()
         {
-            context?.Dispose();
+            Context?.Dispose();
             GC.SuppressFinalize(this);
         }
     }
