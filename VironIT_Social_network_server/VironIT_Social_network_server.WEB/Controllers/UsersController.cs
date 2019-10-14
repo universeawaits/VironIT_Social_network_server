@@ -53,6 +53,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
             }
         }
 
-        
+        public async Task Update([FromBody] )
     }
 }
