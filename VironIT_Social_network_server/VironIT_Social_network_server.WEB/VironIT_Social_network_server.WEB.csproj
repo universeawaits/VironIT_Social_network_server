@@ -5,8 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20191013211330_Initial.cs" />
-    <Compile Remove="Migrations\20191013211330_Initial.Designer.cs" />
+    <Compile Remove="Migrations\20191014023154_overridiiing.cs" />
+    <Compile Remove="Migrations\20191014023154_overridiiing.Designer.cs" />
+    <Compile Remove="Migrations\20191014023209_overriding_ads.cs" />
+    <Compile Remove="Migrations\20191014023209_overriding_ads.Designer.cs" />
+    <Compile Remove="Migrations\20191014024452_extend_identityuser.cs" />
+    <Compile Remove="Migrations\20191014024452_extend_identityuser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

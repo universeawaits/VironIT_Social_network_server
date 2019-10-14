@@ -3,43 +3,45 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
-using VironIT_Social_network_server.WEB.Identity.JWT;
 using System.Text;
+
+using VironIT_Social_network_server.WEB.Identity.JWT;
+using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
-    [Authorize]
-    [ApiController]
     [Route("[controller]")]
+    [ApiController]
     public class AccountsController : ControllerBase
     {
-        private UserManager<IdentityUser> manager;
-        public AccountsController(UserManager<IdentityUser> manager)
+        private UserManager<User> manager;
+
+        public AccountsController(UserManager<User> manager)
         {
             this.manager = manager;
         }
 
-        [HttpPost("/token")]
-        public async Task Token()
+        [HttpPost]
+        [Route("token")]
+        public async Task Token([FromBody] UserLoginModel user)
         {
-            string username = Request.Form["username"];
-            string password = Request.Form["password"];
+            string emailOrPhone = user.EmailOrPhone;
+            string password = user.Password;
 
-            ClaimsIdentity identity = await GetIdentityAsync(username, password);
+            ClaimsIdentity identity = await GetIdentityAsync(emailOrPhone, password);
             if (identity == null)
             {
                 Response.StatusCode = 400;
-                await Response.WriteAsync("Invalid username or password.");
+                await Response.WriteAsync("invalid username or password");
                 return;
             }
 
@@ -59,7 +61,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             var response = new
             {
                 token = encodedJwt,
-                username = identity.Name
+                email = identity.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
             };
 
             Response.ContentType = "application/json";
@@ -69,25 +71,70 @@ namespace VironIT_Social_network_server.WEB.Controllers
                 );
         }
 
-        private async Task<ClaimsIdentity> GetIdentityAsync(string username, string password)
+        private async Task<ClaimsIdentity> GetIdentityAsync(string emailOrPassword, string password)
         {
-            IdentityUser person = await manager.FindByNameAsync(username);
+            User foundUser = await manager.FindByEmailAsync(emailOrPassword);
+            foundUser ??= await manager.Users.FirstOrDefaultAsync(
+                user => user.PhoneNumber.Equals(emailOrPassword)
+                );
 
-            if (person != null)
+            if (foundUser != null)
             {
-                bool isPasswordValid = await manager.CheckPasswordAsync(person, password);
+                bool isPasswordValid = await manager.CheckPasswordAsync(foundUser, password);
 
-                IList<Claim> claims = new List<Claim>
+                if (isPasswordValid)
                 {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email)
-                };
-                ClaimsIdentity claimsIdentity =
-                    new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
+                    IList<Claim> claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Email, foundUser.Email)
+                    };
+                    ClaimsIdentity claimsIdentity =
+                        new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+                        ClaimsIdentity.DefaultRoleClaimType);
+
+                    foundUser.LastSeen = DateTime.Now;
+                    await manager.UpdateAsync(foundUser);
+
+                    return claimsIdentity;
+                }
             }
 
             return null;
+        }
+
+        [HttpGet]
+        [Route("userdata")]
+        public async Task<IActionResult> Get()
+        {
+            string email = this.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+
+            User foundUser = await manager.FindByEmailAsync(email);
+            if (foundUser != null)
+            {
+                return Ok(new
+                {
+                    name = foundUser.UserName,
+                    email = foundUser.Email,
+                    phone = foundUser.PhoneNumber,
+                    registered = foundUser.Registered,
+                    avatarSrc = ""
+                });
+            }
+            else
+            {
+                return BadRequest("email is not valid");
+            }
+        }
+
+        [HttpPost]
+        [Route("logout")]
+        public async Task Logout()
+        {
+            string email = this.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            User foundUser = await manager.FindByEmailAsync(email);
+
+            foundUser.LastSeen = DateTime.Now;
+            await manager.UpdateAsync(foundUser);
         }
     }
 }

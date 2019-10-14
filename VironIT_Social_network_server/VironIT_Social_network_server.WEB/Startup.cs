@@ -28,10 +28,26 @@ namespace VironIT_Social_network_server.WEB
         {
             services.AddDbContext<IdentityContext>(
                 options => options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>();
+            services.Configure<IdentityOptions>(
+                options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
+
+                    options.User.RequireUniqueEmail = true;
+                });
 
             services.AddCors();
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
@@ -62,21 +78,8 @@ namespace VironIT_Social_network_server.WEB
                     };
                 }
             );
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>();
-            services.Configure<IdentityOptions>(
-                options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequiredLength = 8;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireLowercase = false;
-
-                    options.User.RequireUniqueEmail = true;
-                });
 
             services.AddSignalR();
-            services.AddMvc();
             services.AddControllers();
         }
 
@@ -92,12 +95,13 @@ namespace VironIT_Social_network_server.WEB
                 .AllowAnyMethod()
                 .AllowAnyHeader());
             app.UseHttpsRedirection();
-            app.UseRouting();
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseAuthentication();
-
-            app.UseEndpoints(endpoints =>
+            app.UseRouting();
+            app.UseEndpoints(builder =>
             {
-                endpoints.MapControllers();
+                builder.MapControllers();
             });
         }
     }
