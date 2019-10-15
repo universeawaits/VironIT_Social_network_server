@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 
 using VironIT_Social_network_server.DAL.Model;
 
@@ -9,7 +7,7 @@ namespace VironIT_Social_network_server.DAL.Context
 {
     public class ImageContext : DbContext
     {
-        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Image> Avatars { get; set; }
 
         public ImageContext()
         {

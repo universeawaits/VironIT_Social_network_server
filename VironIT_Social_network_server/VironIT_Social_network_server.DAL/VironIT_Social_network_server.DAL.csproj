@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.17" />
   </ItemGroup>
 
 </Project>
