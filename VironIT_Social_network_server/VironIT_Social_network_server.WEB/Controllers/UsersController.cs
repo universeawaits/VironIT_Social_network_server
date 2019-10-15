@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.IdentityProvider;
 using VironIT_Social_network_server.WEB.ViewModel;
@@ -19,11 +19,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
     {
         private UserManager<User> manager;
         private IEmailService emailService;
+        private IImageService imageSrevice;
 
-        public UsersController(UserManager<User> manager, IEmailService emailService)
+        public UsersController(UserManager<User> manager, IEmailService emailService, IImageService imageSrevice)
         {
             this.manager = manager;
             this.emailService = emailService;
+            this.imageSrevice = imageSrevice;
         }
 
         [HttpPost]
@@ -58,6 +60,18 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     "registration", 
                     $"dear {newUser.UserName}, welcome to the skies"
                     );
+                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                {
+                    Link = "",
+                    UserEmail = newUser.Email,
+                    ImageSize = "Large"
+                });
+                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                {
+                    Link = "",
+                    UserEmail = newUser.Email,
+                    ImageSize = "Medium"
+                });
 
                 return Created("users", "registered successfully");
             }
@@ -72,9 +86,9 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("updateData")]
         public async Task<IActionResult> UpdateData([FromBody] UserEditModel user)
         {
-            User foundUser = await manager.FindByEmailAsync(
-                User.Claims.Where(claim => claim.Type == ClaimTypes.Email).FirstOrDefault().Value
-                );
+            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+
+            User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser == null)
             {
                 return Unauthorized();
@@ -85,12 +99,16 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
             if (!user.Password.Trim().Equals(""))
             {
-                await manager.ResetPasswordAsync(foundUser, Request.Headers["Authorization"], user.Password);
-                emailService.SendAsync(
-                        foundUser.Email,
-                        "password",
-                        $"dear {foundUser.UserName}, you password has changed"
-                        );
+                string token = await manager.GeneratePasswordResetTokenAsync(foundUser);
+                IdentityResult resetResult = await manager.ResetPasswordAsync(foundUser, token, user.Password);
+                if (resetResult.Succeeded)
+                {
+                    await emailService.SendAsync(
+                            foundUser.Email,
+                            "password",
+                            $"dear {foundUser.UserName}, you password has changed"
+                            );
+                }
             }            
 
             return Ok();

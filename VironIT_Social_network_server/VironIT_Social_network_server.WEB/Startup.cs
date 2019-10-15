@@ -1,3 +1,5 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,7 +44,8 @@ namespace VironIT_Social_network_server.WEB
                     options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")); 
                 });
             services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>();
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(
                 options =>
                 {
@@ -79,7 +82,7 @@ namespace VironIT_Social_network_server.WEB
                         ValidAudience = JwtOptions.Audience,
                         ValidateLifetime = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtOptions.Secret)),
-                        ValidateIssuerSigningKey = true,
+                        ValidateIssuerSigningKey = true
                     };
                     options.Events = new JwtBearerEvents
                     {

@@ -14,7 +14,7 @@ namespace VironIT_Social_network_server.DAL.Repository
         Task<IEnumerable<TEntity>> GetAllAsync(params Expression<Func<TEntity, object>>[] includes);
         IQueryable<TEntity> GetList(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
         Task<TEntity> GetById(int id, params Expression<Func<TEntity, object>>[] includes);
-        Task<TEntity> GetEntityByFilter(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes);
+        Task<TEntity> GetEntityByFilter(Expression<Func<TEntity, bool>> predicate);
         Task CreateAsync(TEntity item);
         void Update(TEntity item);
         Task DeleteAsync(int id);

@@ -8,13 +8,12 @@ using VironIT_Social_network_server.DAL.UnitOfWork;
 
 namespace VironIT_Social_network_server.BLL.Services.Interface
 {
-    public interface IImageService : IService<ImageDTO>
+    public interface IImageService
     {
         IUnitOfWork<ImageContext> Unit { get; }
 
-        Task<Stream> ReadAsync(ImageDTO image);
+        Task AddAsync(ImageDTO image);
+        Task<ImageDTO> GetAvatar(string userEmail);
         Task AddAvatar(Stream image, string userEmail);
-        Task<ImageDTO> ResizeAsync(ImageDTO image, uint width, uint height);
-        Task<ImageDTO> CompressAsync(ImageDTO image, uint width, uint height);
     }
 }
