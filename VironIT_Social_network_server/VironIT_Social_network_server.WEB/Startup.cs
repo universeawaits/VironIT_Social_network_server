@@ -14,6 +14,10 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 using VironIT_Social_network_server.BLL;
+using VironIT_Social_network_server.BLL.Services;
+using VironIT_Social_network_server.BLL.Services.Interface;
+using VironIT_Social_network_server.DAL.Context;
+using VironIT_Social_network_server.DAL.UnitOfWork;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 
@@ -32,7 +36,10 @@ namespace VironIT_Social_network_server.WEB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>(
-                options => options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")));
+                options => 
+                { 
+                    options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")); 
+                });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>();
             services.Configure<IdentityOptions>(
@@ -45,6 +52,13 @@ namespace VironIT_Social_network_server.WEB
                     options.Password.RequireLowercase = false;
 
                     options.User.RequireUniqueEmail = true;
+                });
+            services.AddDbContext<ImageContext>(
+                options =>
+                {
+                    options.UseNpgsql(
+                        Configuration.GetConnectionString("ImagesConnection"),
+                        b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
 
             services.AddCors();
@@ -86,6 +100,8 @@ namespace VironIT_Social_network_server.WEB
 
             services.AddSignalR();
             services.AddAutoMapper(typeof(BLLMapperProfile));
+            services.AddTransient<IImageService, ImageService>();
+            services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
             services.AddControllers();
         }
 

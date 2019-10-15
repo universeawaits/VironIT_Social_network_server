@@ -1,21 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using VironIT_Social_network_server.BLL.DTO;
-using VironIT_Social_network_server.DAL.UnitOfWork;
+
 
 namespace VironIT_Social_network_server.BLL.Services.Interface
 {
-    public interface IService<TIUnitOfWork> where TIUnitOfWork : IUnitOfWork
+    public interface IService<TEntity> where TEntity : EntityDTO
     {
-        Task AddAsync(EntityDTO entity);
-        Task AddAsync(IEnumerable<EntityDTO> entities);
-        Task RemoveAsync(int id);
-        Task RemoveAsync(IEnumerable<int> entitiesIds);
-        Task UpdateAsync(EntityDTO entity);
-        Task UpdateAsync(IEnumerable<EntityDTO> entities);
+        Task<TEntity> GetAsync(int id);
+        Task<IEnumerable<TEntity>> GetAllAsunc();
+        void Add(TEntity entity);
+        void AddAll(IEnumerable<TEntity> entitis);
+        void Remove(int id);
+        Task UpdateAsync(TEntity entity);
     }
 }

@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.IO;
 using System.Threading.Tasks;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.DAL.Context;
 using VironIT_Social_network_server.DAL.UnitOfWork;
 
+
 namespace VironIT_Social_network_server.BLL.Services.Interface
 {
-    public interface IImageService : IService<IUnitOfWork<ImageContext>>
+    public interface IImageService : IService<ImageDTO>
     {
-        Task<ImageDTO> Resize(int id, uint width, uint height);
-        //Task<ImageDTO> Resize(ImageDTO image, uint width, uint height);
-        Task<ImageDTO> Compress(int id, uint width, uint height);
-        //Task<ImageDTO> Compress(ImageDTO image, uint width, uint height);
+        IUnitOfWork<ImageContext> Unit { get; }
+
+        Task<Stream> ReadAsync(ImageDTO image);
+        Task AddAvatar(Stream image, string userEmail);
+        Task<ImageDTO> ResizeAsync(ImageDTO image, uint width, uint height);
+        Task<ImageDTO> CompressAsync(ImageDTO image, uint width, uint height);
     }
 }

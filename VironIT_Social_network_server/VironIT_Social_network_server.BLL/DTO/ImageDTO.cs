@@ -6,6 +6,7 @@ namespace VironIT_Social_network_server.BLL.DTO
 {
     public class ImageDTO : EntityDTO
     {
-        public string RelativePath { get; set; }
+        public string Link { get; set; }
+        public string UserEmail { get; set; }
     }
 }

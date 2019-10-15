@@ -2,6 +2,7 @@
 {
     public class Image : Entity
     {
-        public string RelativePath { get; set; }
+        public string Link { get; set; }
+        public string UserEmail { get; set; }
     }
 }
