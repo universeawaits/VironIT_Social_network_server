@@ -15,7 +15,7 @@ using System.Text;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.ViewModel;
 using VironIT_Social_network_server.WEB.Identity;
-using Microsoft.AspNetCore.Authorization;
+
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
@@ -117,7 +117,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     email = foundUser.Email,
                     phone = foundUser.PhoneNumber,
                     registered = foundUser.Registered,
-                    avatarSrc = ""
+                    avatarSrc = foundUser.Email + ".jpg"
                 });
             }
             else

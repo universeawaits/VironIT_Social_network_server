@@ -20,6 +20,7 @@ using VironIT_Social_network_server.DAL.Context;
 using VironIT_Social_network_server.DAL.UnitOfWork;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.Identity.JWT;
+using VironIT_Social_network_server.WEB.IdentityProvider;
 
 
 namespace VironIT_Social_network_server.WEB
@@ -101,6 +102,7 @@ namespace VironIT_Social_network_server.WEB
             services.AddSignalR();
             services.AddAutoMapper(typeof(BLLMapperProfile));
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
             services.AddControllers();
         }

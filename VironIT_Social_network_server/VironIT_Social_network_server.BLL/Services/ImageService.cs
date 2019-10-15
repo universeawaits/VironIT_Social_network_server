@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.DAL.Context;
-using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.UnitOfWork;
+
 
 namespace VironIT_Social_network_server.BLL.Services
 {
