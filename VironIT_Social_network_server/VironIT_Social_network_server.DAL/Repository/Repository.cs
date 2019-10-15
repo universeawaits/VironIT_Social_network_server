@@ -11,11 +11,11 @@ using VironIT_Social_network_server.DAL.Model;
 
 namespace VironIT_Social_network_server.DAL.Repository
 {
-    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> where TEntity : BaseEntity where TContext : DbContext
+    public class Repository<TEntity, TContext> : IRepository<TEntity> where TEntity : Entity where TContext : DbContext
     {
         private readonly TContext context;
 
-        public BaseRepository(TContext context)
+        public Repository(TContext context)
         {
             this.context = context;
         }
@@ -73,14 +73,9 @@ namespace VironIT_Social_network_server.DAL.Repository
             return await query.SingleOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<TEntity> GetEntityByFilter(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includes)
+        public async Task<TEntity> GetEntityByFilter(Expression<Func<TEntity, bool>> predicate)
         {
-            IQueryable<TEntity> query = context.Set<TEntity>();
-
-            foreach (Expression<Func<TEntity, object>> include in includes)
-                query = query.Include(include);
-
-            return await query.SingleOrDefaultAsync(predicate);
+            return await context.Set<TEntity>().FirstOrDefaultAsync(predicate);
         }
     }
 }

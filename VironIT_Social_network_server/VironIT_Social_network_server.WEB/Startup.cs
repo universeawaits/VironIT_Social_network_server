@@ -19,6 +19,8 @@ using Microsoft.IdentityModel.Tokens;
 using VironIT_Social_network_server.BLL;
 using VironIT_Social_network_server.BLL.Services;
 using VironIT_Social_network_server.BLL.Services.Interface;
+using VironIT_Social_network_server.DAL.Context;
+using VironIT_Social_network_server.DAL.UnitOfWork;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.IdentityProvider;
