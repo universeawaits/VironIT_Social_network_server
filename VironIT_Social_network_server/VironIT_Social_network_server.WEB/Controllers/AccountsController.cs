@@ -16,6 +16,7 @@ using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.ViewModel;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.BLL.Services.Interface;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
