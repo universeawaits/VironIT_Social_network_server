@@ -1,19 +1,18 @@
 ﻿using AutoMapper;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.DAL.Context;
-using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.UnitOfWork;
+
 
 namespace VironIT_Social_network_server.BLL.Services
 {
@@ -33,50 +32,19 @@ namespace VironIT_Social_network_server.BLL.Services
             this.mapper = mapper;
         }
 
-        public void Add(ImageDTO entity)
+        public async Task AddAsync(ImageDTO entity)
         {
-            throw new NotImplementedException();
+            await Unit.Repository<DAL.Model.Image>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Image>(entity));
+            await Unit.SaveAsync();
         }
 
-        public void AddAll(IEnumerable<ImageDTO> entitis)
+        public async Task<ImageDTO> GetAvatar(string userEmail)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ImageDTO> CompressAsync(ImageDTO image, uint width, uint height)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IEnumerable<ImageDTO>> GetAllAsunc()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ImageDTO> GetAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Stream> ReadAsync(ImageDTO image)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async void Remove(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ImageDTO> ResizeAsync(ImageDTO image, uint width, uint height)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpdateAsync(ImageDTO entity)
-        {
-            throw new NotImplementedException();
-        }
+            return mapper.Map<DAL.Model.Image, ImageDTO>(
+                await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+                    image => image.UserEmail.Equals(userEmail))
+                );
+        } 
 
         public async Task AddAvatar(Stream image, string userEmail)
         {
@@ -96,35 +64,47 @@ namespace VironIT_Social_network_server.BLL.Services
 
             var uniqueFileName = userEmail + ".jpg";
 
-            var largeLink = "https://localhost:44334/images/avatars/large/" + uniqueFileName;
-            var mediumLink = "https://localhost:44334/images/avatars/medium/" + uniqueFileName;
-
             using (var largeFileStream = new FileStream(Path.Combine(largeAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(largeFileStream);
-
-                ImageDTO newAvatar = new ImageDTO
-                {
-                    Link = largeLink,
-                    UserEmail = userEmail
-                };
-                await Unit.Repository<DAL.Model.Image>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Image>(newAvatar));
+                await largeFileStream.DisposeAsync();
+                Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
             }
-            Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
 
             image.Position = 0;
             using (var mediumFileStream = new FileStream(Path.Combine(mediumAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(mediumFileStream);
-
-                ImageDTO newContactImage = new ImageDTO
-                {
-                    Link = mediumLink,
-                    UserEmail = userEmail
-                };
-                await Unit.Repository<DAL.Model.Image>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Image>(newContactImage));
+                await mediumFileStream.DisposeAsync();
+                Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
             }
-            Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
+
+            var largeLink = "https://localhost:44345/images/avatars/large/" + uniqueFileName;
+            var mediumLink = "https://localhost:44345/images/avatars/medium/" + uniqueFileName;
+
+            await UpdateAvatarsLinks(userEmail, largeLink, mediumLink);
+        }
+
+        private async Task UpdateAvatarsLinks(string userEmail, string largeLink, string mediumLink)
+        {
+            DAL.Model.Image large = await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+                image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Large")
+                );
+
+            if (large.Link.Equals(""))
+            {
+                DAL.Model.Image medium = await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+                    image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Medium")
+                    );
+
+                large.Link = largeLink;
+                medium.Link = mediumLink;
+
+                Unit.Repository<DAL.Model.Image>().Update(large);
+                Unit.Repository<DAL.Model.Image>().Update(medium);
+
+                await Unit.SaveAsync();
+            }
         }
 
         private void Resize(string path, Size size)

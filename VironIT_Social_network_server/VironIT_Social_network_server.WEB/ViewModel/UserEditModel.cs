@@ -9,6 +9,5 @@ namespace VironIT_Social_network_server.WEB.ViewModel
     {
         public string Name { get; set; }
         public string Password { get; set; }
-        public string AvatarSrc { get; set; }
     }
 }

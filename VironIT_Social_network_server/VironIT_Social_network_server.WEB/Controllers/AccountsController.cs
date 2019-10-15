@@ -15,6 +15,7 @@ using System.Text;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.ViewModel;
 using VironIT_Social_network_server.WEB.Identity;
+using VironIT_Social_network_server.BLL.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 
 namespace VironIT_Social_network_server.WEB.Controllers
@@ -24,10 +25,12 @@ namespace VironIT_Social_network_server.WEB.Controllers
     public class AccountsController : ControllerBase
     {
         private UserManager<User> manager;
+        private IImageService imageService;
 
-        public AccountsController(UserManager<User> manager)
+        public AccountsController(UserManager<User> manager, IImageService imageService)
         {
             this.manager = manager;
+            this.imageService = imageService;
         }
 
         [HttpPost]
@@ -106,7 +109,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("userdata")]
         public async Task<IActionResult> Get()
         {
-            string email = this.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
 
             User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser != null)
@@ -117,7 +120,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     email = foundUser.Email,
                     phone = foundUser.PhoneNumber,
                     registered = foundUser.Registered,
-                    avatarSrc = ""
+                    avatarSrc = (await imageService.GetAvatar(foundUser.Email)).Link
                 });
             }
             else
@@ -130,7 +133,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("logout")]
         public async Task Logout()
         {
-            string email = this.User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
             User foundUser = await manager.FindByEmailAsync(email);
 
             foundUser.LastSeen = DateTime.Now;

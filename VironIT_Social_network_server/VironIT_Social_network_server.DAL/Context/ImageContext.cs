@@ -9,7 +9,7 @@ namespace VironIT_Social_network_server.DAL.Context
 {
     public class ImageContext : DbContext
     {
-        public virtual DbSet<Image> Images { get; set; }
+        public virtual DbSet<Image> Avatars { get; set; }
 
         public ImageContext()
         {

@@ -4,5 +4,6 @@
     {
         public string Link { get; set; }
         public string UserEmail { get; set; }
+        public string ImageSize { get; set; }
     }
 }
