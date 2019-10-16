@@ -5,15 +5,16 @@ using VironIT_Social_network_server.DAL.Model;
 
 namespace VironIT_Social_network_server.DAL.Context
 {
-    public class ImageContext : DbContext
+    public class ContactContext : DbContext
     {
-        public virtual DbSet<Avatar> Avatars { get; set; }
+        public virtual DbSet<ContactUser> ContactedUsers { get; set; }
+        public virtual DbSet<BlockedUser> BlockedUsers { get; set; }
 
-        public ImageContext()
+        public ContactContext()
         {
         }
 
-        public ImageContext(DbContextOptions<ImageContext> options)
+        public ContactContext(DbContextOptions<ImageContext> options)
             : base(options)
         {
         }
@@ -25,11 +26,6 @@ namespace VironIT_Social_network_server.DAL.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Avatar>().HasKey(image => image.Id);
-
-            modelBuilder.Entity<Avatar>().Property(image => image.Link).IsRequired(true);
-            modelBuilder.Entity<Avatar>().Property(image => image.UserEmail).IsRequired(true);
         }
     }
 }

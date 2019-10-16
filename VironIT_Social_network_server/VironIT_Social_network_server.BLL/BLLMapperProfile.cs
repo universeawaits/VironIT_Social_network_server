@@ -10,8 +10,8 @@ namespace VironIT_Social_network_server.BLL
     {
         public BLLMapperProfile()
         {
-            CreateMap<Image, ImageDTO>();
-            CreateMap<ImageDTO, Image>();
+            CreateMap<Avatar, ImageDTO>();
+            CreateMap<ImageDTO, Avatar>();
         }
     }
 }

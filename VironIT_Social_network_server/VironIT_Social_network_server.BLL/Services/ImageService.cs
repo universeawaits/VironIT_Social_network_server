@@ -34,14 +34,14 @@ namespace VironIT_Social_network_server.BLL.Services
 
         public async Task AddAsync(ImageDTO entity)
         {
-            await Unit.Repository<DAL.Model.Image>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Image>(entity));
+            await Unit.Repository<DAL.Model.Avatar>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Avatar>(entity));
             await Unit.SaveAsync();
         }
 
         public async Task<ImageDTO> GetAvatar(string userEmail)
         {
-            return mapper.Map<DAL.Model.Image, ImageDTO>(
-                await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+            return mapper.Map<DAL.Model.Avatar, ImageDTO>(
+                await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
                     image => image.UserEmail.Equals(userEmail))
                 );
         } 
@@ -87,21 +87,21 @@ namespace VironIT_Social_network_server.BLL.Services
 
         private async Task UpdateAvatarsLinks(string userEmail, string largeLink, string mediumLink)
         {
-            DAL.Model.Image large = await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+            DAL.Model.Avatar large = await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
                 image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Large")
                 );
 
             if (large.Link.Equals(""))
             {
-                DAL.Model.Image medium = await Unit.Repository<DAL.Model.Image>().GetEntityByFilter(
+                DAL.Model.Avatar medium = await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
                     image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Medium")
                     );
 
                 large.Link = largeLink;
                 medium.Link = mediumLink;
 
-                Unit.Repository<DAL.Model.Image>().Update(large);
-                Unit.Repository<DAL.Model.Image>().Update(medium);
+                Unit.Repository<DAL.Model.Avatar>().Update(large);
+                Unit.Repository<DAL.Model.Avatar>().Update(medium);
 
                 await Unit.SaveAsync();
             }
