@@ -6,14 +6,14 @@ using VironIT_Social_network_server.DAL.UnitOfWork;
 
 namespace VironIT_Social_network_server.BLL.Services.Interface
 {
-    interface IContactService
+    public interface IContactService
     {
         IUnitOfWork<ContactContext> Unit { get; }
 
         Task AddContactAsync(ContactDTO contact);
         Task RemoveContactAsync(ContactDTO contact);
         Task AddBlockAsync(BlockDTO block);
-        Task UnblockUserAsync(BlockDTO block);
+        Task UnblockAsync(BlockDTO block);
         Task SetPseudonymAsync(PseudonymDTO pseudonym);
         Task RemovePseudonymAsync(PseudonymDTO pseudonym);
     }

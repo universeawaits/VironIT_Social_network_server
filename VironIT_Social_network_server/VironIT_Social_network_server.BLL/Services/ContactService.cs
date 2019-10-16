@@ -68,7 +68,7 @@ namespace VironIT_Social_network_server.BLL.Services
             await Unit.SaveAsync();
         }
 
-        public async Task UnblockUserAsync(BlockDTO block)
+        public async Task UnblockAsync(BlockDTO block)
         {
             Block found = await Unit.Repository<Block>().GetEntityByFilter(
                 _block =>
