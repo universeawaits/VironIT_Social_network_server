@@ -16,6 +16,8 @@ namespace VironIT_Social_network_server.BLL
             CreateMap<ContactDTO, Contact>();
             CreateMap<Block, BlockDTO>();
             CreateMap<BlockDTO, Block>();
+            CreateMap<Pseudonym, PseudonymDTO>();
+            CreateMap<PseudonymDTO, Pseudonym>();
         }
     }
 }
