@@ -22,26 +22,26 @@ namespace VironIT_Social_network_server.WEB
             //CreateMap<ContactDTO, ContactModel>();
             CreateMap<ContactModel, ContactDTO>().ForMember(
                 dest => dest.ContactedUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactedUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactedUserEmail).Result.Id)
                 ).ForMember(
                 dest => dest.ContactingUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactingUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactingUserEmail).Result.Id)
                 );
             //CreateMap<BlockDTO, BlockModel>();
             CreateMap<BlockModel, BlockDTO>().ForMember(
                 dest => dest.BlockedUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockedUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockedUserEmail).Result.Id)
                 ).ForMember(
                 dest => dest.BlockingUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockingUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockingUserEmail).Result.Id)
                 );
             //CreateMap<PseudonymDTO, PseudonymModel>();
             CreateMap<PseudonymModel, PseudonymDTO>().ForMember(
                 dest => dest.PseudoFromUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoFromUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoFromUserEmail).Result.Id)
                 ).ForMember(
                 dest => dest.PseudoForUserId,
-                options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoForUserEmail).Id)
+                options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoForUserEmail).Result.Id)
                 );
         }
     }

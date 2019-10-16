@@ -10,10 +10,14 @@ namespace VironIT_Social_network_server.BLL
     {
         public BLLMapperProfile()
         {
-            CreateMap<Avatar, AvatarDTO>().ReverseMap();
-            CreateMap<Contact, ContactDTO>().ReverseMap();
-            CreateMap<Block, BlockDTO>().ReverseMap();
-            CreateMap<Pseudonym, PseudonymDTO>().ReverseMap();
+            CreateMap<Avatar, AvatarDTO>();
+            CreateMap<AvatarDTO, Avatar>();
+            CreateMap<Contact, ContactDTO>();
+            CreateMap<ContactDTO, Contact>();
+            CreateMap<Block, BlockDTO>();
+            CreateMap<BlockDTO, Block>();
+            CreateMap<PseudonymDTO, Pseudonym>();
+            CreateMap<Pseudonym, PseudonymDTO>();
         }
     }
 }

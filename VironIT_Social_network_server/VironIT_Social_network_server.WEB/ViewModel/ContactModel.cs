@@ -1,5 +1,18 @@
-﻿namespace VironIT_Social_network_server.WEB.ViewModel
+﻿using System;
+
+namespace VironIT_Social_network_server.WEB.ViewModel
 {
+    public class ContactProfileModel
+    {
+        public UserProfileModel User { get; set; }
+
+        public string Pseudonym { get; set; }
+        public bool IsOnline { get; set; }
+        public bool IsBlocked { get; set; }
+        public bool IsContact { get; set; }
+        public DateTime LastSeen { get; set; }
+    }
+
     public class ContactModel
     {
         public string ContactingUserEmail { get; set; }

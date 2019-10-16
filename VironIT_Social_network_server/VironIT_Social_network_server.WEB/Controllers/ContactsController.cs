@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,40 +19,55 @@ namespace VironIT_Social_network_server.WEB.Controllers
     public class ContactsController : ControllerBase
     {
         private IContactService contactService;
+        private IMapper mapper;
 
-        public ContactsController(IContactService contactService)
+        public ContactsController(IContactService contactService, IMapper mapper)
         {
             this.contactService = contactService;
+            this.mapper = mapper;
         }
 
-        public async Task AddContact([FromBody] ContactDTO contact)
+        [HttpPost]
+        [Route("addContact")]
+        public async Task AddContact([FromBody] ContactModel contact)
         {
-            await contactService.AddContactAsync(contact);
+            Console.WriteLine(mapper.Map<ContactModel, ContactDTO>(contact).ContactingUserId);
+            await contactService.AddContactAsync(mapper.Map<ContactModel, ContactDTO>(contact));
         }
 
-        public async Task RemoveContact([FromBody] ContactDTO contact)
+        [HttpPost]
+        [Route("removeContact")]
+        public async Task RemoveContact([FromBody] ContactModel contact)
         {
-            await contactService.RemoveContactAsync(contact);
+            await contactService.RemoveContactAsync(mapper.Map<ContactModel, ContactDTO>(contact));
         }
 
-        public async Task AddBlock([FromBody] BlockDTO block)
+        [HttpPost]
+        [Route("block")]
+        public async Task AddBlock([FromBody] BlockModel block)
         {
-            await contactService.AddBlockAsync(block);
+            await contactService.AddBlockAsync(mapper.Map<BlockModel, BlockDTO>(block));
         }
 
-        public async Task Unblock([FromBody] BlockDTO block)
+        [HttpPost]
+        [Route("unblock")]
+        public async Task Unblock([FromBody] BlockModel block)
         {
-            await contactService.UnblockAsync(block);
+            await contactService.UnblockAsync(mapper.Map<BlockModel, BlockDTO>(block));
         }
 
-        public async Task SetPseudonym([FromBody] PseudonymDTO pseudonym)
+        [HttpPost]
+        [Route("setPseudo")]
+        public async Task SetPseudonym([FromBody] PseudonymModel pseudonym)
         {
-            await contactService.SetPseudonymAsync(pseudonym);
+            await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
         }
 
-        public async Task RemovePseudonym([FromBody] PseudonymDTO pseudonym)
+        [HttpPost]
+        [Route("removePseudo")]
+        public async Task RemovePseudonym([FromBody] PseudonymModel pseudonym)
         {
-            await contactService.RemovePseudonymAsync(pseudonym);
+            await contactService.RemovePseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
         }
     }
 }

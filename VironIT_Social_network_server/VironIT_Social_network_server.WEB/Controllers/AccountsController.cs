@@ -114,13 +114,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
             User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser != null)
             {
-                return Ok(new
+                return Ok(new UserProfileModel
                 {
-                    name = foundUser.UserName,
-                    email = foundUser.Email,
-                    phone = foundUser.PhoneNumber,
-                    registered = foundUser.Registered,
-                    avatarSrc = (await imageService.GetAvatar(foundUser.Email)).Link
+                    Name = foundUser.UserName,
+                    Email = foundUser.Email,
+                    Phone = foundUser.PhoneNumber,
+                    Registered = foundUser.Registered,
+                    Avatar = (await imageService.GetAvatar(foundUser.Email)).Link
                 });
             }
             else

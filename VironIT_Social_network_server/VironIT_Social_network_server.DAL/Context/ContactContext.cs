@@ -15,7 +15,7 @@ namespace VironIT_Social_network_server.DAL.Context
         {
         }
 
-        public ContactContext(DbContextOptions<ImageContext> options)
+        public ContactContext(DbContextOptions<ContactContext> options)
             : base(options)
         {
         }
