@@ -60,13 +60,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     "registration", 
                     $"dear {newUser.UserName}, welcome to the skies"
                     );
-                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                await imageSrevice.AddAvatarAsync(new BLL.DTO.ImageDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,
                     ImageSize = "Large"
                 });
-                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                await imageSrevice.AddAvatarAsync(new BLL.DTO.ImageDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,

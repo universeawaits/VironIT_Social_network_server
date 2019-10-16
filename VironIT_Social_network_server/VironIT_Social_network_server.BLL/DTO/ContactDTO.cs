@@ -11,4 +11,11 @@
         public string BlockingUserId { get; set; }
         public string BlockedUserId { get; set; }
     }
+
+    public class PseuonymDTO : EntityDTO
+    {
+        public string PseudoFromUserId { get; set; }
+        public string PseudoForUserId { get; set; }
+        public string Pseudonym { get; set; }
+    }
 }

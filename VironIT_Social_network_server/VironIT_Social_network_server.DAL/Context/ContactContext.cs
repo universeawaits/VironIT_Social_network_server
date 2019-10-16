@@ -7,7 +7,7 @@ namespace VironIT_Social_network_server.DAL.Context
 {
     public class ContactContext : DbContext
     {
-        public virtual DbSet<ContactUser> ContactedUsers { get; set; }
+        public virtual DbSet<ContactedUser> ContactedUsers { get; set; }
         public virtual DbSet<BlockedUser> BlockedUsers { get; set; }
 
         public ContactContext()

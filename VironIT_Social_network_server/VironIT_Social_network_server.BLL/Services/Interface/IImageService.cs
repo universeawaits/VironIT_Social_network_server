@@ -12,8 +12,8 @@ namespace VironIT_Social_network_server.BLL.Services.Interface
     {
         IUnitOfWork<ImageContext> Unit { get; }
 
-        Task AddAsync(ImageDTO image);
-        Task<ImageDTO> GetAvatar(string userEmail);
-        Task AddAvatar(Stream image, string userEmail);
+        Task AddAvatarAsync(AvatarDTO image);
+        Task<AvatarDTO> GetAvatar(string userEmail);
+        Task UpdateAvatarAsync(Stream image, string userEmail);
     }
 }

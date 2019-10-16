@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.DAL.Context;
+using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.UnitOfWork;
 
 
@@ -32,21 +33,21 @@ namespace VironIT_Social_network_server.BLL.Services
             this.mapper = mapper;
         }
 
-        public async Task AddAsync(ImageDTO entity)
+        public async Task AddAvatarAsync(AvatarDTO entity)
         {
-            await Unit.Repository<DAL.Model.Avatar>().CreateAsync(mapper.Map<ImageDTO, DAL.Model.Avatar>(entity));
+            await Unit.Repository<Avatar>().CreateAsync(mapper.Map<AvatarDTO, Avatar>(entity));
             await Unit.SaveAsync();
         }
 
-        public async Task<ImageDTO> GetAvatar(string userEmail)
+        public async Task<AvatarDTO> GetAvatar(string userEmail)
         {
-            return mapper.Map<DAL.Model.Avatar, ImageDTO>(
-                await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
+            return mapper.Map<Avatar, AvatarDTO>(
+                await Unit.Repository<Avatar>().GetEntityByFilter(
                     image => image.UserEmail.Equals(userEmail))
                 );
         } 
 
-        public async Task AddAvatar(Stream image, string userEmail)
+        public async Task UpdateAvatarAsync(Stream image, string userEmail)
         {
             var largeAvatar = @"wwwroot\" + AvatarFolder + "large";
             var mediumAvatar = @"wwwroot\" + AvatarFolder + "medium";
@@ -87,21 +88,21 @@ namespace VironIT_Social_network_server.BLL.Services
 
         private async Task UpdateAvatarsLinks(string userEmail, string largeLink, string mediumLink)
         {
-            DAL.Model.Avatar large = await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
-                image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Large")
+            Avatar large = await Unit.Repository<Avatar>().GetEntityByFilter(
+                image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Large")
                 );
 
             if (large.Link.Equals(""))
             {
-                DAL.Model.Avatar medium = await Unit.Repository<DAL.Model.Avatar>().GetEntityByFilter(
-                    image => image.UserEmail.Equals(userEmail) && image.ImageSize.Equals("Medium")
+                Avatar medium = await Unit.Repository<Avatar>().GetEntityByFilter(
+                    image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Medium")
                     );
 
                 large.Link = largeLink;
                 medium.Link = mediumLink;
 
-                Unit.Repository<DAL.Model.Avatar>().Update(large);
-                Unit.Repository<DAL.Model.Avatar>().Update(medium);
+                Unit.Repository<Avatar>().Update(large);
+                Unit.Repository<Avatar>().Update(medium);
 
                 await Unit.SaveAsync();
             }
