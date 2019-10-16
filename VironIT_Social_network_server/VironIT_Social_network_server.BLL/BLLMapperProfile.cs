@@ -12,6 +12,8 @@ namespace VironIT_Social_network_server.BLL
         {
             CreateMap<Avatar, ImageDTO>();
             CreateMap<ImageDTO, Avatar>();
+            CreateMap<Avatar, ImageDTO>();
+            CreateMap<ImageDTO, Avatar>();
         }
     }
 }
