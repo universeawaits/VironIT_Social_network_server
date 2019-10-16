@@ -12,10 +12,10 @@ namespace VironIT_Social_network_server.BLL
         {
             CreateMap<Avatar, AvatarDTO>();
             CreateMap<AvatarDTO, Avatar>();
-            CreateMap<ContactedUser, ContactedUserDTO>();
-            CreateMap<ContactedUserDTO, ContactedUser>();
-            CreateMap<BlockedUser, BlockedUserDTO>();
-            CreateMap<BlockedUserDTO, BlockedUser>();
+            CreateMap<Contact, ContactDTO>();
+            CreateMap<ContactDTO, Contact>();
+            CreateMap<Block, BlockDTO>();
+            CreateMap<BlockDTO, Block>();
         }
     }
 }
