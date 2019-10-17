@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.ViewModel;
@@ -35,22 +35,23 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IEnumerable<ContactProfileModel>> SearchByEmailOrPhone(
             [FromQuery(Name = "emailOrPhone")] string emailOrPhone
             )
-        {/*
-            IEnumerable<BlockDTO> blockedForMe = await contactService.GetBlocksFor(
-                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
+        {
+            IEnumerable<BlockDTO> blockedForMe = await contactService.GetBlocksForAsync(
+                (await manager.FindByEmailAsync(
+                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value))
+                .Id
                 );
-            IEnumerable<User> remainUsers = manager.Users.Where(
+            IEnumerable<User> remainUsers = manager.Users
+                .Where(
+                    user => user.Email.StartsWith(emailOrPhone) ||
+                    user.PhoneNumber.StartsWith(emailOrPhone)
+                    );
+            remainUsers = remainUsers
+                .Where(
                     user => blockedForMe.All(
-                        block => !block.BlockedUserId.Equals(user.Id)
-                        )).Where(
-                            user => user.Email.StartsWith(emailOrPhone) || 
-                            user.PhoneNumber.StartsWith(emailOrPhone)
-                            );*/
-            IEnumerable<ContactProfileModel> profiles = await ToProfile(/*remainUsers*/
-                manager.Users.Where(user => user.Email.StartsWith(emailOrPhone) ||
-                            user.PhoneNumber.StartsWith(emailOrPhone)).AsEnumerable());
-
-            return profiles;
+                        block => !block.BlockingUserId.Equals(user.Id))
+                    );
+            return remainUsers != null ? await ToProfile(remainUsers) : null;
         }
 
         private async Task<IEnumerable<ContactProfileModel>> ToProfile(IEnumerable<User> users)
