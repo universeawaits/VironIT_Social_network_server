@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services;
 using VironIT_Social_network_server.BLL.Services.Interface;
+using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.ViewModel;
 
 
@@ -18,20 +21,60 @@ namespace VironIT_Social_network_server.WEB.Controllers
     [ApiController]
     public class ContactsController : ControllerBase
     {
+        private UserManager<User> manager;
         private IContactService contactService;
+        private IImageService imageService;
         private IMapper mapper;
 
-        public ContactsController(IContactService contactService, IMapper mapper)
+        public ContactsController(
+            UserManager<User> manager,
+            IContactService contactService, 
+            IMapper mapper, 
+            IImageService imageService)
         {
+            this.manager = manager;
             this.contactService = contactService;
+            this.imageService = imageService;
             this.mapper = mapper;
+        }
+
+        [HttpGet]
+        [Route("all")]
+        public async Task<IEnumerable<ContactProfileModel>> GetAllContacts()
+        {
+            IEnumerable<ContactDTO> contacts = await contactService.GetContacts(
+                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
+                );
+            return await ToProfileModel(contacts);
+        }
+
+        private async Task<IEnumerable<ContactProfileModel>> ToProfileModel(IEnumerable<ContactDTO> contacts)
+        {
+            ICollection<ContactProfileModel> profiles = new List<ContactProfileModel>();
+
+            foreach (ContactDTO contact in contacts)
+            {
+                User contacted = await manager.FindByIdAsync(contact.ContactedUserId);
+                ContactProfileModel profile = new ContactProfileModel 
+                {
+                    IsBlocked = false,
+                    IsContact = true,
+                    IsOnline = contacted.IsOnline,
+                    LastSeen = contacted.LastSeen,
+                    Pseudonym = await contactService.GetPseudonymRawAsync(contacted.Id),
+                    User = mapper.Map<User, UserProfileModel>(contacted)
+                };
+                profile.User.Avatar = (await imageService.GetLargeAvatar(contacted.Email)).Link;
+                profiles.Add(profile);
+            }
+
+            return profiles;
         }
 
         [HttpPost]
         [Route("addContact")]
         public async Task AddContact([FromBody] ContactModel contact)
         {
-            Console.WriteLine(mapper.Map<ContactModel, ContactDTO>(contact).ContactingUserId);
             await contactService.AddContactAsync(mapper.Map<ContactModel, ContactDTO>(contact));
         }
 

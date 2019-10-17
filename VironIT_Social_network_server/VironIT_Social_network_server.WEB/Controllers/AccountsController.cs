@@ -17,6 +17,7 @@ using VironIT_Social_network_server.WEB.ViewModel;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
@@ -26,11 +27,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
     {
         private UserManager<User> manager;
         private IImageService imageService;
+        private IMapper mapper;
 
-        public AccountsController(UserManager<User> manager, IImageService imageService)
+        public AccountsController(UserManager<User> manager, IImageService imageService, IMapper mapper)
         {
             this.manager = manager;
             this.imageService = imageService;
+            this.mapper = mapper;
         }
 
         [HttpPost]
@@ -43,7 +46,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             ClaimsIdentity identity = await GetIdentityAsync(emailOrPhone, password);
             if (identity == null)
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = StatusCodes.Status400BadRequest;
                 await Response.WriteAsync("invalid username or password");
                 return;
             }
@@ -114,14 +117,9 @@ namespace VironIT_Social_network_server.WEB.Controllers
             User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser != null)
             {
-                return Ok(new UserProfileModel
-                {
-                    Name = foundUser.UserName,
-                    Email = foundUser.Email,
-                    Phone = foundUser.PhoneNumber,
-                    Registered = foundUser.Registered,
-                    Avatar = (await imageService.GetAvatar(foundUser.Email)).Link
-                });
+                UserProfileModel profile = mapper.Map<User, UserProfileModel>(foundUser);
+                profile.Avatar = (await imageService.GetLargeAvatar(foundUser.Email)).Link;
+                return Ok(profile);
             }
             else
             {

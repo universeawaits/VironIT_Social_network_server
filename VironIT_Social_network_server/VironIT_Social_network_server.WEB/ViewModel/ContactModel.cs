@@ -10,7 +10,7 @@ namespace VironIT_Social_network_server.WEB.ViewModel
         public bool IsOnline { get; set; }
         public bool IsBlocked { get; set; }
         public bool IsContact { get; set; }
-        public DateTime LastSeen { get; set; }
+        public DateTime? LastSeen { get; set; }
     }
 
     public class ContactModel
