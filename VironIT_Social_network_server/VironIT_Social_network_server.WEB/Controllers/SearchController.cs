@@ -56,13 +56,16 @@ namespace VironIT_Social_network_server.WEB.Controllers
         private async Task<IEnumerable<ContactProfileModel>> ToProfile(IEnumerable<User> users)
         {
             ICollection<ContactProfileModel> profiles = new List<ContactProfileModel>();
+            string currUserId = (await manager.FindByEmailAsync(
+                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value))
+                .Id;
 
             foreach (User user in users)
             {
                 ContactProfileModel profile = new ContactProfileModel
                 {
                     IsBlocked = false,
-                    IsContact = true,
+                    IsContact = await contactService.IsContactedAsync(currUserId, user.Id),
                     IsOnline = user.IsOnline,
                     LastSeen = user.LastSeen,
                     Pseudonym = await contactService.GetPseudonymRawAsync(user.Id),
