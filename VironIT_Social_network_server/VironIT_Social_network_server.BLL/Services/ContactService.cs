@@ -95,10 +95,10 @@ namespace VironIT_Social_network_server.BLL.Services
 
         public async Task<IEnumerable<ContactDTO>> GetContacts(string contactingUserId)
         {
-            return mapper.Map<IEnumerable<Contact>, IEnumerable<ContactDTO>>(
-                unit.Repository<Contact>().GetList(
+            IEnumerable<Contact> contacts = unit.Repository<Contact>().GetList(
                     contact => contact.ContactingUserId.Equals(contactingUserId)
-                    ));
+                    );
+            return mapper.Map<IEnumerable<Contact>, IEnumerable<ContactDTO>>(contacts);
         }
 
         public async Task<string> GetPseudonymRawAsync(string pseudoForUserId)

@@ -43,8 +43,9 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IEnumerable<ContactProfileModel>> GetAllContacts()
         {
             IEnumerable<ContactDTO> contacts = await contactService.GetContacts(
-                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
-                );
+                (await manager.FindByEmailAsync(
+                    User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
+                    )).Id);
             return await ToProfileModel(contacts);
         }
 
