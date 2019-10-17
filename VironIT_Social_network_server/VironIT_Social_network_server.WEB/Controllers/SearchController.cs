@@ -64,7 +64,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             {
                 ContactProfileModel profile = new ContactProfileModel
                 {
-                    IsBlocked = false,
+                    IsBlocked = await contactService.IsBlocked(currUserId, user.Id),
                     IsContact = await contactService.IsContactedAsync(currUserId, user.Id),
                     IsOnline = user.IsOnline,
                     LastSeen = user.LastSeen,

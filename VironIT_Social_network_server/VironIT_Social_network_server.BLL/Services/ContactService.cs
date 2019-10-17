@@ -130,7 +130,7 @@ namespace VironIT_Social_network_server.BLL.Services
         {
             return (await unit.Repository<Block>()
                 .GetEntityByFilter(
-                block => block.BlockedUserId.Equals(probBlockedUserId) ||
+                block => block.BlockedUserId.Equals(probBlockedUserId) &&
                 block.BlockingUserId.Equals(blockingUserId))) != null;
         }
     }
