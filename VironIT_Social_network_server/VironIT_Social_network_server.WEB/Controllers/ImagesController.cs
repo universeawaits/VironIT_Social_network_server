@@ -24,7 +24,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         {
             if (image != null)
             {
-                await imageService.AddAvatar(image.OpenReadStream(), useremail);
+                await imageService.UpdateAvatarAsync(image.OpenReadStream(), useremail);
             }
         }
     }

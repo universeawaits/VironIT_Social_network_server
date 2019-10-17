@@ -65,6 +65,13 @@ namespace VironIT_Social_network_server.WEB
                         Configuration.GetConnectionString("ImagesConnection"),
                         b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
+            services.AddDbContext<ContactContext>(
+                options =>
+                {
+                    options.UseNpgsql(
+                        Configuration.GetConnectionString("ContactsConnection"),
+                        b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
+                });
 
             services.AddCors();
             services.AddAuthentication(o =>
@@ -109,10 +116,21 @@ namespace VironIT_Social_network_server.WEB
             );
 
             services.AddSignalR();
-            services.AddAutoMapper(typeof(BLLMapperProfile));
+
+            services.AddScoped(provider => new MapperConfiguration(
+                cfg =>
+                {
+                    cfg.AddProfile(new WEBMapperProfile(provider.GetService<UserManager<User>>()));
+                    cfg.AddProfile(new BLLMapperProfile());
+                }).CreateMapper());
+
             services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<IContactService, ContactService>();
             services.AddTransient<IEmailService, EmailService>();
+
             services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
+            services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
+
             services.AddControllers();
         }
 

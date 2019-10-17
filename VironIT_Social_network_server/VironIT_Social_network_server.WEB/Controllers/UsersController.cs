@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
+using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.IdentityProvider;
@@ -34,7 +36,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         {
             if (user == null)
             {
-                return null; // ??
+                return BadRequest("user was empty");
             }
 
             string username = user.Username;
@@ -60,17 +62,17 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     "registration", 
                     $"dear {newUser.UserName}, welcome to the skies"
                     );
-                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                await imageSrevice.AddAvatarAsync(new AvatarDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,
-                    ImageSize = "Large"
+                    SizeCategory = "Large"
                 });
-                await imageSrevice.AddAsync(new BLL.DTO.ImageDTO
+                await imageSrevice.AddAvatarAsync(new AvatarDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,
-                    ImageSize = "Medium"
+                    SizeCategory = "Medium"
                 });
 
                 return Created("users", "registered successfully");
