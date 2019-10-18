@@ -2,22 +2,24 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Newtonsoft.Json;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.ViewModel;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.BLL.Services.Interface;
-using Microsoft.AspNetCore.Authorization;
+
 using AutoMapper;
+using Newtonsoft.Json;
+
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
@@ -43,7 +45,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             string emailOrPhone = user.EmailOrPhone;
             string password = user.Password;
 
-            ClaimsIdentity identity = await GetIdentityAsync(emailOrPhone, password);
+            ClaimsIdentity identity = await ConfirmIdentityAsync(emailOrPhone, password);
             if (identity == null)
             {
                 Response.StatusCode = StatusCodes.Status400BadRequest;
@@ -64,10 +66,12 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     );
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
+            string _email = identity.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+
             var response = new
             {
                 token = encodedJwt,
-                email = identity.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
+                email = _email
             };
 
             Response.ContentType = "application/json";
@@ -77,7 +81,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                 );
         }
 
-        private async Task<ClaimsIdentity> GetIdentityAsync(string emailOrPassword, string password)
+        private async Task<ClaimsIdentity> ConfirmIdentityAsync(string emailOrPassword, string password)
         {
             User foundUser = await manager.FindByEmailAsync(emailOrPassword);
             foundUser ??= await manager.Users.FirstOrDefaultAsync(
@@ -99,6 +103,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                         ClaimsIdentity.DefaultRoleClaimType);
 
                     foundUser.LastSeen = DateTime.Now;
+                    foundUser.IsOnline = true;
                     await manager.UpdateAsync(foundUser);
 
                     return claimsIdentity;
