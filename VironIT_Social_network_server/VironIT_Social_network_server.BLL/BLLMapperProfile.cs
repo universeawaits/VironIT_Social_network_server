@@ -18,6 +18,8 @@ namespace VironIT_Social_network_server.BLL
             CreateMap<BlockDTO, Block>();
             CreateMap<PseudonymDTO, Pseudonym>();
             CreateMap<Pseudonym, PseudonymDTO>();
+            CreateMap<Message, MessageDTO>();
+            CreateMap<MessageDTO, Message>();
         }
     }
 }

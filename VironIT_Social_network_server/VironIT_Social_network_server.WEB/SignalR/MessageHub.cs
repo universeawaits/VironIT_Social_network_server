@@ -1,26 +1,29 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+
 using Microsoft.AspNetCore.SignalR;
 
 using System.Threading.Tasks;
-
-using VironIT_Social_network_server.WEB.Identity;
+using VironIT_Social_network_server.BLL.DTO;
+using VironIT_Social_network_server.BLL.Services.Interface;
 
 
 namespace VironIT_Social_network_server.WEB.SignalR
 {
     public class MessageHub : Hub
     {
-        private UserManager<User> manager;
+        private IMessageService messageService;
+        private IMapper mapper;
 
-
-        public MessageHub(UserManager<User> manager)
+        public MessageHub(IMapper mapper, IMessageService messageService)
         {
-            this.manager = manager;
+            this.mapper = mapper;
+            this.messageService = messageService;
         }
 
-        public async Task SendMessage(Message message)
+        public async Task SendMessage(MessageModel message)
         {
-            await Clients.User(Context.UserIdentifier).SendAsync("messageReceived", message);
+            await messageService.AddMessageAsync(mapper.Map<MessageModel, MessageDTO>(message));
+            await Clients.Users(Context.UserIdentifier, message.ToEmail).SendAsync("messageReceived", message);
         }
     }
 }

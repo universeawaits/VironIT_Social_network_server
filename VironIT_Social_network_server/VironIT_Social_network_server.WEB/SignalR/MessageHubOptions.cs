@@ -6,12 +6,11 @@ using System.Security.Claims;
 
 namespace VironIT_Social_network_server.WEB.SignalR
 {
-    public class Message
+    public class MessageModel
     {
         public string FromEmail { get; set; }
         public string ToEmail { get; set; }
         public string Text { get; set; }
-        public string Status { get; set; }
         public DateTime DateTime { get; set; }
     }
 

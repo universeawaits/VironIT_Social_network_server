@@ -117,6 +117,11 @@ namespace VironIT_Social_network_server.WEB
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            
+                            return Task.CompletedTask;
                         }
                     };
                 }
@@ -134,10 +139,12 @@ namespace VironIT_Social_network_server.WEB
 
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IEmailService, EmailService>();
 
             services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
             services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
+            services.AddScoped<IUnitOfWork<MessageContext>, UnitOfWork<MessageContext>>();
 
             services.AddControllers();
         }
@@ -168,8 +175,8 @@ namespace VironIT_Social_network_server.WEB
             app.UseRouting();
             app.UseEndpoints(builder =>
             {
-                builder.MapControllers();
                 builder.MapHub<MessageHub>("/messageHub");
+                builder.MapControllers();
             });
         }
     }

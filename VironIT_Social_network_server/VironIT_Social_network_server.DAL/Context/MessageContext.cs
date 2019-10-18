@@ -13,7 +13,7 @@ namespace VironIT_Social_network_server.DAL.Context
         {
         }
 
-        public MessageContext(DbContextOptions<ImageContext> options)
+        public MessageContext(DbContextOptions<MessageContext> options)
             : base(options)
         {
         }
