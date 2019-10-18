@@ -72,6 +72,13 @@ namespace VironIT_Social_network_server.WEB
                         Configuration.GetConnectionString("ContactsConnection"),
                         b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
+            services.AddDbContext<MessageContext>(
+                options =>
+                {
+                    options.UseNpgsql(
+                        Configuration.GetConnectionString("MessagesConnection"),
+                        b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
+                });
 
             services.AddCors();
             services.AddAuthentication(o =>

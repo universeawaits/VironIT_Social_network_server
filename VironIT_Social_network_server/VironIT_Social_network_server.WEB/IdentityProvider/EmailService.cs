@@ -17,7 +17,7 @@ namespace VironIT_Social_network_server.WEB.IdentityProvider
         {
             var emailMessage = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("skies", "myowngollum@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("skies", ""));
             emailMessage.To.Add(new MailboxAddress("", to));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)

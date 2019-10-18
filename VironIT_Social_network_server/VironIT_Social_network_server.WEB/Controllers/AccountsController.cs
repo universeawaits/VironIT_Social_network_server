@@ -140,6 +140,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             User foundUser = await manager.FindByEmailAsync(email);
 
             foundUser.LastSeen = DateTime.Now;
+            foundUser.IsOnline = false;
             await manager.UpdateAsync(foundUser);
         }
     }
