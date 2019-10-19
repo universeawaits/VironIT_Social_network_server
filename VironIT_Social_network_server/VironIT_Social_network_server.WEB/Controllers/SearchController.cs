@@ -37,9 +37,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             )
         {
             IEnumerable<BlockDTO> blockedForMe = await contactService.GetBlocksForAsync(
-                (await manager.FindByEmailAsync(
-                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value))
-                .Id
+                (await manager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email))).Id
                 );
             IEnumerable<User> remainUsers = manager.Users
                 .Where(

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
+
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
+
 
 namespace VironIT_Social_network_server.WEB.Controllers
 {
@@ -29,7 +29,17 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IEnumerable<MessageDTO>> GetMessagesHistory([FromQuery(Name = "withEmail")] string withEmail)
         {
             return await messageService.GetMessagesHistoryAsync(
-                User.FindFirst(ClaimTypes.Email).Value, withEmail, historyMessagesCount);
+                User.FindFirst(ClaimTypes.Email).Value, withEmail, historyMessagesCount
+                );
+        }
+
+        [HttpDelete]
+        [Route("clearHistory")]
+        public async Task ClearHistory([FromQuery(Name = "withEmail")] string withEmail)
+        {
+            await messageService.ClearMessagesHistoryAsync(
+                User.FindFirstValue(ClaimTypes.Email), withEmail
+                );
         }
     }
 }

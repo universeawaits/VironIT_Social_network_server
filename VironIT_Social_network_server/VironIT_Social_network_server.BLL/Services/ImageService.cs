@@ -41,9 +41,20 @@ namespace VironIT_Social_network_server.BLL.Services
         {
             return mapper.Map<Avatar, AvatarDTO>(
                 await unit.Repository<Avatar>().GetEntityByFilter(
-                    image => image.UserEmail.Equals(userEmail))
-                );
-        } 
+                    image => 
+                        image.UserEmail.Equals(userEmail) &&
+                        image.SizeCategory.Equals(SizeCategory.Large)
+                    ));
+        }
+        public async Task<AvatarDTO> GetMediumAvatar(string userEmail)
+        {
+            return mapper.Map<Avatar, AvatarDTO>(
+                await unit.Repository<Avatar>().GetEntityByFilter(
+                    image =>
+                        image.UserEmail.Equals(userEmail) &&
+                        image.SizeCategory.Equals(SizeCategory.Medium)
+                    ));
+        }
 
         public async Task UpdateAvatarAsync(Stream image, string userEmail)
         {
@@ -87,13 +98,17 @@ namespace VironIT_Social_network_server.BLL.Services
         private async Task UpdateAvatarsLinks(string userEmail, string largeLink, string mediumLink)
         {
             Avatar large = await unit.Repository<Avatar>().GetEntityByFilter(
-                image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Large")
+                image => 
+                    image.UserEmail.Equals(userEmail) && 
+                    image.SizeCategory.Equals(SizeCategory.Large)
                 );
 
             if (large.Link.Equals(""))
             {
                 Avatar medium = await unit.Repository<Avatar>().GetEntityByFilter(
-                    image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Medium")
+                    image => 
+                        image.UserEmail.Equals(userEmail) && 
+                        image.SizeCategory.Equals(SizeCategory.Medium)
                     );
 
                 large.Link = largeLink;

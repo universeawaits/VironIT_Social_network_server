@@ -10,6 +10,7 @@ namespace VironIT_Social_network_server.BLL.Services.Interface
     {
         Task AddAvatarAsync(AvatarDTO image);
         Task<AvatarDTO> GetLargeAvatar(string userEmail);
+        Task<AvatarDTO> GetMediumAvatar(string userEmail);
         Task UpdateAvatarAsync(Stream image, string userEmail);
     }
 }

@@ -39,6 +39,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
                 return BadRequest("user was empty");
             }
 
+            if (manager.Users.FirstOrDefault(
+                    _user => _user.PhoneNumber.Equals(user.Phone)
+                ) != null)
+            {
+                return BadRequest($"phone {user.Phone} is already taken");
+            }
+
             string username = user.Username;
             string email = user.Email;
             string phone = user.Phone;
@@ -88,7 +95,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("updateData")]
         public async Task<IActionResult> UpdateData([FromBody] UserEditModel user)
         {
-            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.FindFirstValue(ClaimTypes.Email);
 
             User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser == null)
@@ -114,7 +121,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
             }            
 
             return Ok();
-
         }
     }
 }
