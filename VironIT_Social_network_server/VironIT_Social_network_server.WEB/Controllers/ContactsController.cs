@@ -101,17 +101,17 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpPost]
-        [Route("setPseudo")]
+        [Route("setPseudonym")]
         public async Task SetPseudonym([FromBody] PseudonymModel pseudonym)
         {
-            await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
-        }
-
-        [HttpPost]
-        [Route("removePseudo")]
-        public async Task RemovePseudonym([FromBody] PseudonymModel pseudonym)
-        {
-            await contactService.RemovePseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            if (pseudonym.PseudonymRaw.Trim().Equals(""))
+            {
+                await contactService.RemovePseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            }
+            else
+            {
+                await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            }
         }
     }
 }
