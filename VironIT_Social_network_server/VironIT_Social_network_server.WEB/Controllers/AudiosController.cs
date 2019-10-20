@@ -24,7 +24,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IActionResult> UpdateAvatar([FromForm(Name = "file")] IFormFile audio)
         {
             if (audio != null)
-            {
+            { 
                 AudioDTO uploadedAudio = await audioService.UploadAudioAsync(
                     audio.OpenReadStream(),
                     User.FindFirstValue(ClaimTypes.Email)
