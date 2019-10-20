@@ -22,7 +22,8 @@ namespace VironIT_Social_network_server.WEB.SignalR
 
         public async Task SendMessage(MessageModel message)
         {
-            await messageService.AddMessageAsync(mapper.Map<MessageModel, MessageDTO>(message));
+            MessageDTO messDTO = mapper.Map<MessageModel, MessageDTO>(message);
+            await messageService.AddMessageAsync(messDTO);
             await Clients.Users(Context.UserIdentifier, message.ToEmail).SendAsync("messageReceived", message);
         }
     }

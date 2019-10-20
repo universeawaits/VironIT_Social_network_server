@@ -1,4 +1,4 @@
-﻿namespace VironIT_Social_network_server.WEB.ViewModel
+﻿namespace VironIT_Social_network_server.WEB.ViewModels
 {
     public class UserLoginModel
     {

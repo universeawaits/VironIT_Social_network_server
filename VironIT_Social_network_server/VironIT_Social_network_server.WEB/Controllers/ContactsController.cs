@@ -12,7 +12,7 @@ using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.ViewModels;
 
 
 namespace VironIT_Social_network_server.WEB.Controllers
@@ -65,7 +65,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     Pseudonym = await contactService.GetPseudonymRawAsync(contacted.Id),
                     User = mapper.Map<User, UserProfileModel>(contacted)
                 };
-                profile.User.Avatar = (await imageService.GetLargeAvatar(contacted.Email)).Link;
+                profile.User.Avatar = (await imageService.GetMediumAvatar(contacted.Email)).Link;
                 profiles.Add(profile);
             }
 

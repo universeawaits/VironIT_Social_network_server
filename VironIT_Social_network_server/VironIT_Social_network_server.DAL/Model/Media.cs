@@ -1,16 +1,18 @@
 ﻿namespace VironIT_Social_network_server.DAL.Model
 {
-    public struct SizeCategory
+    public struct AvatarSizeCategory
     {
         public static string Large = "Large";
         public static string Medium = "Medium";
     }
 
-    public class Image : Entity
+    public class Media : Entity
     {
         public string Link { get; set; }
         public string UserEmail { get; set; }
     }
+
+    public class Image : Media { }
 
     public class Avatar : Image {
         public string SizeCategory { get; set; }

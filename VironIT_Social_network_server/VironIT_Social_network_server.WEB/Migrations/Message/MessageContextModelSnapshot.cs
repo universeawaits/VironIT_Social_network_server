@@ -29,8 +29,14 @@ namespace VironIT_Social_network_server.WEB.Migrations.Message
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("ForwardFromEmail")
+                        .HasColumnType("text");
+
                     b.Property<string>("FromEmail")
                         .HasColumnType("text");
+
+                    b.Property<int?>("MessageMediaId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
@@ -40,7 +46,39 @@ namespace VironIT_Social_network_server.WEB.Migrations.Message
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MessageMediaId")
+                        .IsUnique();
+
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.MessageMedia", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
+
+                    b.Property<int>("MediaId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Type")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MessagesMedia");
+                });
+
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Message", b =>
+                {
+                    b.HasOne("VironIT_Social_network_server.DAL.Model.MessageMedia", "MessageMedia")
+                        .WithOne("Message")
+                        .HasForeignKey("VironIT_Social_network_server.DAL.Model.Message", "MessageMediaId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

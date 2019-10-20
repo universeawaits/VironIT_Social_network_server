@@ -13,7 +13,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
 using VironIT_Social_network_server.WEB.Identity.JWT;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.ViewModels;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.BLL.Services.Interface;
 

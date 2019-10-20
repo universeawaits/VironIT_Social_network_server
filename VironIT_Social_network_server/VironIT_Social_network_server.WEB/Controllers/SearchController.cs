@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.ViewModels;
 
 
 namespace VironIT_Social_network_server.WEB.Controllers
@@ -70,7 +70,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     Pseudonym = await contactService.GetPseudonymRawAsync(user.Id),
                     User = mapper.Map<User, UserProfileModel>(user)
                 };
-                profile.User.Avatar = (await imageService.GetLargeAvatar(user.Email)).Link;
+                profile.User.Avatar = (await imageService.GetMediumAvatar(user.Email)).Link;
                 profiles.Add(profile);
             }
 

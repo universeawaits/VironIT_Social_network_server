@@ -58,11 +58,11 @@ namespace VironIT_Social_network_server.WEB
 
                     options.User.RequireUniqueEmail = true;
                 });
-            services.AddDbContext<ImageContext>(
+            services.AddDbContext<MediaContext>(
                 options =>
                 {
                     options.UseNpgsql(
-                        Configuration.GetConnectionString("ImagesConnection"),
+                        Configuration.GetConnectionString("MediaConnection"),
                         b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
             services.AddDbContext<ContactContext>(
@@ -107,7 +107,7 @@ namespace VironIT_Social_network_server.WEB
 
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(token) &&
-                                (path.StartsWithSegments("/messageHub")))
+                                (path.StartsWithSegments("/hubs/message")))
                             {
                                 context.Token = token;
                             }
@@ -142,7 +142,7 @@ namespace VironIT_Social_network_server.WEB
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IEmailService, EmailService>();
 
-            services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
+            services.AddScoped<IUnitOfWork<MediaContext>, UnitOfWork<MediaContext>>();
             services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
             services.AddScoped<IUnitOfWork<MessageContext>, UnitOfWork<MessageContext>>();
 
@@ -175,7 +175,7 @@ namespace VironIT_Social_network_server.WEB
             app.UseRouting();
             app.UseEndpoints(builder =>
             {
-                builder.MapHub<MessageHub>("/messageHub");
+                builder.MapHub<MessageHub>("/hubs/message");
                 builder.MapControllers();
             });
         }

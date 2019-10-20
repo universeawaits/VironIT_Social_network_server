@@ -8,7 +8,7 @@ using VironIT_Social_network_server.DAL.Context;
 
 namespace VironIT_Social_network_server.WEB.Migrations.Image
 {
-    [DbContext(typeof(ImageContext))]
+    [DbContext(typeof(MediaContext))]
     [Migration("20191016202641_initial2")]
     partial class initial2
     {

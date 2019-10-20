@@ -28,13 +28,14 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("history")]
         public async Task<IEnumerable<MessageDTO>> GetMessagesHistory([FromQuery(Name = "withEmail")] string withEmail)
         {
-            return await messageService.GetMessagesHistoryAsync(
+            IEnumerable<MessageDTO> history = await messageService.GetMessagesHistoryAsync(
                 User.FindFirst(ClaimTypes.Email).Value, withEmail, historyMessagesCount
                 );
+            return history;
         }
 
         [HttpDelete]
-        [Route("clearHistory")]
+        [Route("history")]
         public async Task ClearHistory([FromQuery(Name = "withEmail")] string withEmail)
         {
             await messageService.ClearMessagesHistoryAsync(

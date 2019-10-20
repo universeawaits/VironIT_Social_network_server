@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace VironIT_Social_network_server.WEB.ViewModel
+namespace VironIT_Social_network_server.WEB.ViewModels
 {
     public class UserRegisterModel
     {

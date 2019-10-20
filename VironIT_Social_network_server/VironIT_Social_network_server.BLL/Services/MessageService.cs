@@ -25,9 +25,13 @@ namespace VironIT_Social_network_server.BLL.Services
 
         public async Task AddMessageAsync(MessageDTO message)
         {
-            await unit.Repository<Message>().CreateAsync(
-                mapper.Map<MessageDTO, Message>(message)
-                );
+            Message newMessage = mapper.Map<MessageDTO, Message>(message);
+            if (newMessage.MessageMedia != null)
+            {
+                await unit.Repository<MessageMedia>().CreateAsync(newMessage.MessageMedia);
+            }
+
+            await unit.Repository<Message>().CreateAsync(newMessage);
             await unit.SaveAsync();
         }
 
@@ -46,7 +50,7 @@ namespace VironIT_Social_network_server.BLL.Services
             string fromUserEmail, string toUserEmail, int messagesCount)
         {
             return mapper.Map<IEnumerable<Message>, IEnumerable<MessageDTO>>(
-                await GetMessageHistoryAsync(fromUserEmail, toUserEmail)).AsEnumerable().Take(messagesCount);
+                (await GetMessageHistoryAsync(fromUserEmail, toUserEmail)).Take(messagesCount).ToList());
         }
 
         private async Task<IQueryable<Message>> GetMessageHistoryAsync(
@@ -54,7 +58,8 @@ namespace VironIT_Social_network_server.BLL.Services
         {
             return unit.Repository<Message>().GetList(message =>
                 (message.FromEmail.Equals(fromUserEmail) && message.ToEmail.Equals(toUserEmail)) ||
-                (message.FromEmail.Equals(toUserEmail) && message.ToEmail.Equals(fromUserEmail))
+                (message.FromEmail.Equals(toUserEmail) && message.ToEmail.Equals(fromUserEmail)),
+                message => message.MessageMedia
                 );
         }
     }

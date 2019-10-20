@@ -5,15 +5,18 @@ using VironIT_Social_network_server.DAL.Model;
 
 namespace VironIT_Social_network_server.DAL.Context
 {
-    public class ImageContext : DbContext
+    public class MediaContext : DbContext
     {
         public virtual DbSet<Avatar> Avatars { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
+        //public virtual DbSet<Avatar> Video { get; set; }
+        //public virtual DbSet<Avatar> Audio { get; set; }
 
-        public ImageContext()
+        public MediaContext()
         {
         }
 
-        public ImageContext(DbContextOptions<ImageContext> options)
+        public MediaContext(DbContextOptions<MediaContext> options)
             : base(options)
         {
         }
@@ -24,12 +27,6 @@ namespace VironIT_Social_network_server.DAL.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Avatar>().HasKey(image => image.Id);
-
-            modelBuilder.Entity<Avatar>().Property(image => image.Link).IsRequired(true);
-            modelBuilder.Entity<Avatar>().Property(image => image.UserEmail).IsRequired(true);
         }
     }
 }
