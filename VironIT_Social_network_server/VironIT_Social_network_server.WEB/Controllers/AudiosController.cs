@@ -17,7 +17,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
         public AudiosController(IAudioService audioService)
         {
-            this.audioService = audioService;
+            this.audioService = audioService;   
         }
 
         [HttpPost]
