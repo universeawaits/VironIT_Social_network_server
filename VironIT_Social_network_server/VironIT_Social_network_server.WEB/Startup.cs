@@ -1,5 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +23,7 @@ using VironIT_Social_network_server.DAL.UnitOfWork;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.Identity.JWT;
 using VironIT_Social_network_server.WEB.IdentityProvider;
+using VironIT_Social_network_server.WEB.SignalR;
 
 
 namespace VironIT_Social_network_server.WEB
@@ -58,11 +58,11 @@ namespace VironIT_Social_network_server.WEB
 
                     options.User.RequireUniqueEmail = true;
                 });
-            services.AddDbContext<ImageContext>(
+            services.AddDbContext<MediaContext>(
                 options =>
                 {
                     options.UseNpgsql(
-                        Configuration.GetConnectionString("ImagesConnection"),
+                        Configuration.GetConnectionString("MediaConnection"),
                         b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
             services.AddDbContext<ContactContext>(
@@ -70,6 +70,13 @@ namespace VironIT_Social_network_server.WEB
                 {
                     options.UseNpgsql(
                         Configuration.GetConnectionString("ContactsConnection"),
+                        b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
+                });
+            services.AddDbContext<MessageContext>(
+                options =>
+                {
+                    options.UseNpgsql(
+                        Configuration.GetConnectionString("MessagesConnection"),
                         b => b.MigrationsAssembly("VironIT_Social_network_server.WEB"));
                 });
 
@@ -100,7 +107,7 @@ namespace VironIT_Social_network_server.WEB
 
                             var path = context.HttpContext.Request.Path;
                             if (!string.IsNullOrEmpty(token) &&
-                                (path.StartsWithSegments("/message")))
+                                (path.StartsWithSegments("/hubs/message")))
                             {
                                 context.Token = token;
                             }
@@ -110,12 +117,18 @@ namespace VironIT_Social_network_server.WEB
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             return Task.CompletedTask;
+                        },
+                        OnTokenValidated = context =>
+                        {
+                            
+                            return Task.CompletedTask;
                         }
                     };
                 }
             );
 
             services.AddSignalR();
+            services.AddSingleton<IUserIdProvider, MessageHubUserIdProvider>();
 
             services.AddScoped(provider => new MapperConfiguration(
                 cfg =>
@@ -126,10 +139,13 @@ namespace VironIT_Social_network_server.WEB
 
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IContactService, ContactService>();
+            services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IAudioService, AudioService>();
             services.AddTransient<IEmailService, EmailService>();
 
-            services.AddScoped<IUnitOfWork<ImageContext>, UnitOfWork<ImageContext>>();
+            services.AddScoped<IUnitOfWork<MediaContext>, UnitOfWork<MediaContext>>();
             services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
+            services.AddScoped<IUnitOfWork<MessageContext>, UnitOfWork<MessageContext>>();
 
             services.AddControllers();
         }
@@ -142,9 +158,10 @@ namespace VironIT_Social_network_server.WEB
             }
 
             app.UseCors(x => x
-                .AllowAnyOrigin()
                 .AllowAnyMethod()
-                .AllowAnyHeader());
+                .AllowAnyHeader()
+                .SetIsOriginAllowed((host) => true)
+                .AllowCredentials());
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseDefaultFiles();
@@ -159,6 +176,7 @@ namespace VironIT_Social_network_server.WEB
             app.UseRouting();
             app.UseEndpoints(builder =>
             {
+                builder.MapHub<MessageHub>("/hubs/message");
                 builder.MapControllers();
             });
         }

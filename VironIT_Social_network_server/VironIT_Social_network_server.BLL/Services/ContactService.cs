@@ -48,8 +48,12 @@ namespace VironIT_Social_network_server.BLL.Services
                     _contact.ContactingUserId.Equals(contact.ContactingUserId) &&
                     _contact.ContactedUserId.Equals(contact.ContactedUserId)
                 );
-            await unit.Repository<Contact>().DeleteAsync(found.Id);
-            await unit.SaveAsync();
+
+            if (found != null)
+            {
+                await unit.Repository<Contact>().DeleteAsync(found.Id);
+                await unit.SaveAsync();
+            }
         }
 
         public async Task RemovePseudonymAsync(PseudonymDTO pseudonym)
@@ -59,8 +63,12 @@ namespace VironIT_Social_network_server.BLL.Services
                     _pseudonym.PseudoFromUserId.Equals(pseudonym.PseudoFromUserId) &&
                     _pseudonym.PseudoForUserId.Equals(pseudonym.PseudoForUserId)
                 );
-            await unit.Repository<Pseudonym>().DeleteAsync(found.Id);
-            await unit.SaveAsync();
+
+            if (found != null)
+            {
+                await unit.Repository<Pseudonym>().DeleteAsync(found.Id);
+                await unit.SaveAsync();
+            }
         }
 
         public async Task SetPseudonymAsync(PseudonymDTO pseudonym)
@@ -78,16 +86,19 @@ namespace VironIT_Social_network_server.BLL.Services
                     _block.BlockingUserId.Equals(block.BlockingUserId) &&
                     _block.BlockedUserId.Equals(block.BlockedUserId)
                 );
-            await unit.Repository<Block>().DeleteAsync(found.Id);
-            await unit.SaveAsync();
+            if (found != null)
+            {
+                await unit.Repository<Block>().DeleteAsync(found.Id);
+                await unit.SaveAsync();
+            }
         }
 
         public async Task<IEnumerable<ContactDTO>> GetContacts(string contactingUserId)
         {
-            return mapper.Map<IEnumerable<Contact>, IEnumerable<ContactDTO>>(
-                unit.Repository<Contact>().GetList(
+            IEnumerable<Contact> contacts = unit.Repository<Contact>().GetList(
                     contact => contact.ContactingUserId.Equals(contactingUserId)
-                    ));
+                    );
+            return mapper.Map<IEnumerable<Contact>, IEnumerable<ContactDTO>>(contacts);
         }
 
         public async Task<string> GetPseudonymRawAsync(string pseudoForUserId)
@@ -106,19 +117,20 @@ namespace VironIT_Social_network_server.BLL.Services
                     .GetList(block => block.BlockedUserId.Equals(blockedUserId)));
         }
 
-        public async Task<bool> IsContacted(string contactingUserId, string probContactedUserId)
+        public async Task<bool> IsContactedAsync(string contactingUserId, string probContactedUserId)
         {
-            return (await unit.Repository<Contact>()
+            Contact c = await unit.Repository<Contact>()
                 .GetEntityByFilter(
-                contact => contact.ContactedUserId.Equals(probContactedUserId) ||
-                contact.ContactingUserId.Equals(contactingUserId))) != null;
+                contact => contact.ContactedUserId.Equals(probContactedUserId) &&
+                contact.ContactingUserId.Equals(contactingUserId));
+            return c != null;
         }
 
         public async Task<bool> IsBlocked(string blockingUserId, string probBlockedUserId)
         {
             return (await unit.Repository<Block>()
                 .GetEntityByFilter(
-                block => block.BlockedUserId.Equals(probBlockedUserId) ||
+                block => block.BlockedUserId.Equals(probBlockedUserId) &&
                 block.BlockingUserId.Equals(blockingUserId))) != null;
         }
     }

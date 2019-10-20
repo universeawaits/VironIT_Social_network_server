@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.WEB.Identity;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.SignalR;
+using VironIT_Social_network_server.WEB.ViewModels;
 
 
 namespace VironIT_Social_network_server.WEB
@@ -50,6 +51,11 @@ namespace VironIT_Social_network_server.WEB
                 dest => dest.PseudoForUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoForUserEmail).Result.Id)
                 );
+            CreateMap<MessageModel, MessageDTO>().ForMember(
+                mess => mess.MessageMedia, opt => opt.Condition(messM => messM.MessageMedia != null)
+                );
+            CreateMap<MessageMediaModel, MessageMediaDTO>();
+            CreateMap<MessageMediaDTO, MessageMediaModel>();
         }
     }
 }

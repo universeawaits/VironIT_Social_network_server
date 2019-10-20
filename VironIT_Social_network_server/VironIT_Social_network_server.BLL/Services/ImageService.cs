@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
-
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
@@ -17,15 +17,16 @@ namespace VironIT_Social_network_server.BLL.Services
 {
     public class ImageService : IImageService
     {
-        private IUnitOfWork<ImageContext> unit;
+        private IUnitOfWork<MediaContext> unit;
         private IMapper mapper;
 
         private Size largeSize = new Size(250, 250);
         private Size mediumSize = new Size(200, 200);
 
-        private string AvatarFolder = @"images\avatars\";
+        private string avatarFolder = @"images\avatars\";
+        private string imagesFolder = @"images\";
 
-        public ImageService(IUnitOfWork<ImageContext> unit, IMapper mapper)
+        public ImageService(IUnitOfWork<MediaContext> unit, IMapper mapper)
         {
             this.unit = unit;
             this.mapper = mapper;
@@ -41,14 +42,26 @@ namespace VironIT_Social_network_server.BLL.Services
         {
             return mapper.Map<Avatar, AvatarDTO>(
                 await unit.Repository<Avatar>().GetEntityByFilter(
-                    image => image.UserEmail.Equals(userEmail))
-                );
-        } 
+                    image => 
+                        image.UserEmail.Equals(userEmail) &&
+                        image.SizeCategory.Equals(AvatarSizeCategory.Large)
+                    ));
+        }
+
+        public async Task<AvatarDTO> GetMediumAvatar(string userEmail)
+        {
+            return mapper.Map<Avatar, AvatarDTO>(
+                await unit.Repository<Avatar>().GetEntityByFilter(
+                    image =>
+                        image.UserEmail.Equals(userEmail) &&
+                        image.SizeCategory.Equals(AvatarSizeCategory.Medium)
+                    ));
+        }
 
         public async Task UpdateAvatarAsync(Stream image, string userEmail)
         {
-            var largeAvatar = @"wwwroot\" + AvatarFolder + "large";
-            var mediumAvatar = @"wwwroot\" + AvatarFolder + "medium";
+            var largeAvatar = @"wwwroot\" + avatarFolder + "large";
+            var mediumAvatar = @"wwwroot\" + avatarFolder + "medium";
             var largeAvatarPath = Path.Combine(Directory.GetCurrentDirectory(), largeAvatar);
             var mediumAvatarPath = Path.Combine(Directory.GetCurrentDirectory(), mediumAvatar);
 
@@ -66,7 +79,6 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var largeFileStream = new FileStream(Path.Combine(largeAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(largeFileStream);
-                await largeFileStream.DisposeAsync();
                 Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
             }
 
@@ -74,7 +86,6 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var mediumFileStream = new FileStream(Path.Combine(mediumAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(mediumFileStream);
-                await mediumFileStream.DisposeAsync();
                 Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
             }
 
@@ -87,13 +98,17 @@ namespace VironIT_Social_network_server.BLL.Services
         private async Task UpdateAvatarsLinks(string userEmail, string largeLink, string mediumLink)
         {
             Avatar large = await unit.Repository<Avatar>().GetEntityByFilter(
-                image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Large")
+                image => 
+                    image.UserEmail.Equals(userEmail) && 
+                    image.SizeCategory.Equals(AvatarSizeCategory.Large)
                 );
 
             if (large.Link.Equals(""))
             {
                 Avatar medium = await unit.Repository<Avatar>().GetEntityByFilter(
-                    image => image.UserEmail.Equals(userEmail) && image.SizeCategory.Equals("Medium")
+                    image => 
+                        image.UserEmail.Equals(userEmail) && 
+                        image.SizeCategory.Equals(AvatarSizeCategory.Medium)
                     );
 
                 large.Link = largeLink;
@@ -135,6 +150,49 @@ namespace VironIT_Social_network_server.BLL.Services
                     }
                 }
             }
+        }
+
+        public async Task<ImageDTO> UploadImageAsync(Stream image, string userEmail)
+        {
+            var relImagePath = @"wwwroot\" + imagesFolder + "\\";
+            var fullImagePath = Path.Combine(Directory.GetCurrentDirectory(), relImagePath);
+
+            if (!Directory.Exists(fullImagePath))
+            {
+                Directory.CreateDirectory(fullImagePath);
+            }
+
+            var uniqueFileName = 
+                DateTime.Now.ToString("ddmmyyhhmmss") + 
+                "_" + userEmail + ".jpg";
+
+            using (var fileStream = new FileStream(Path.Combine(fullImagePath, uniqueFileName), FileMode.Create))
+            {
+                await image.CopyToAsync(fileStream);
+            }
+
+            var link = "https://localhost:44345/images/" + uniqueFileName;
+
+            DAL.Model.Image newImage = new DAL.Model.Image {
+                Link = link,
+                UserEmail = userEmail
+            };
+            await unit.Repository<DAL.Model.Image>().CreateAsync(newImage);
+            await unit.SaveAsync();
+
+            return mapper.Map<DAL.Model.Image, ImageDTO>(newImage);
+        }
+
+        public Task DeleteImageAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<ImageDTO> GetImageAsync(int id)
+        {
+            return mapper.Map<DAL.Model.Image, ImageDTO>(
+                await unit.Repository<DAL.Model.Image>().GetById(id)
+                );
         }
     }
 }

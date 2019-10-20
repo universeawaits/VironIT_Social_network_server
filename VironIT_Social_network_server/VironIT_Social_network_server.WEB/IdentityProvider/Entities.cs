@@ -11,5 +11,4 @@ namespace VironIT_Social_network_server.WEB.Identity
         public DateTime? LastSeen { get; set; }
         public bool IsOnline { get; set; }
     }
-
 }

@@ -7,7 +7,7 @@ using VironIT_Social_network_server.DAL.Context;
 
 namespace VironIT_Social_network_server.WEB.Migrations.Image
 {
-    [DbContext(typeof(ImageContext))]
+    [DbContext(typeof(MediaContext))]
     partial class ImageContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace VironIT_Social_network_server.WEB.Migrations.Image
                 .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Avatar", b =>
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Audio", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -26,19 +26,48 @@ namespace VironIT_Social_network_server.WEB.Migrations.Image
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("SizeCategory")
                         .HasColumnType("text");
 
                     b.Property<string>("UserEmail")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Avatars");
+                    b.ToTable("Audios");
+                });
+
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Image");
+                });
+
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Avatar", b =>
+                {
+                    b.HasBaseType("VironIT_Social_network_server.DAL.Model.Image");
+
+                    b.Property<string>("SizeCategory")
+                        .HasColumnType("text");
+
+                    b.HasDiscriminator().HasValue("Avatar");
                 });
 #pragma warning restore 612, 618
         }

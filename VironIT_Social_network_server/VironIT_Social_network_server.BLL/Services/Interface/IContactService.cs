@@ -11,7 +11,7 @@ namespace VironIT_Social_network_server.BLL.Services.Interface
         Task<IEnumerable<ContactDTO>> GetContacts(string contactingUserId);
         Task AddContactAsync(ContactDTO contact);
         Task RemoveContactAsync(ContactDTO contact);
-        Task<bool> IsContacted(string contactingUserId, string probContactedUserId);
+        Task<bool> IsContactedAsync(string contactingUserId, string probContactedUserId);
         Task AddBlockAsync(BlockDTO block);
         Task UnblockAsync(BlockDTO block);
         Task<bool> IsBlocked(string blockingUserId, string probBlockedUserId);

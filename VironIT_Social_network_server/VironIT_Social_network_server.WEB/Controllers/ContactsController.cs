@@ -12,7 +12,7 @@ using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.ViewModels;
 
 
 namespace VironIT_Social_network_server.WEB.Controllers
@@ -43,8 +43,9 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IEnumerable<ContactProfileModel>> GetAllContacts()
         {
             IEnumerable<ContactDTO> contacts = await contactService.GetContacts(
-                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
-                );
+                (await manager.FindByEmailAsync(
+                    User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value
+                    )).Id);
             return await ToProfileModel(contacts);
         }
 
@@ -64,7 +65,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     Pseudonym = await contactService.GetPseudonymRawAsync(contacted.Id),
                     User = mapper.Map<User, UserProfileModel>(contacted)
                 };
-                profile.User.Avatar = (await imageService.GetLargeAvatar(contacted.Email)).Link;
+                profile.User.Avatar = (await imageService.GetMediumAvatar(contacted.Email)).Link;
                 profiles.Add(profile);
             }
 
@@ -100,17 +101,17 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpPost]
-        [Route("setPseudo")]
+        [Route("setPseudonym")]
         public async Task SetPseudonym([FromBody] PseudonymModel pseudonym)
         {
-            await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
-        }
-
-        [HttpPost]
-        [Route("removePseudo")]
-        public async Task RemovePseudonym([FromBody] PseudonymModel pseudonym)
-        {
-            await contactService.RemovePseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            if (pseudonym.PseudonymRaw.Trim().Equals(""))
+            {
+                await contactService.RemovePseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            }
+            else
+            {
+                await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.IdentityProvider;
-using VironIT_Social_network_server.WEB.ViewModel;
+using VironIT_Social_network_server.WEB.ViewModels;
 
 
 namespace VironIT_Social_network_server.WEB.Controllers
@@ -37,6 +37,13 @@ namespace VironIT_Social_network_server.WEB.Controllers
             if (user == null)
             {
                 return BadRequest("user was empty");
+            }
+
+            if (manager.Users.FirstOrDefault(
+                    _user => _user.PhoneNumber.Equals(user.Phone)
+                ) != null)
+            {
+                return BadRequest($"phone {user.Phone} is already taken");
             }
 
             string username = user.Username;
@@ -88,7 +95,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("updateData")]
         public async Task<IActionResult> UpdateData([FromBody] UserEditModel user)
         {
-            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.FindFirstValue(ClaimTypes.Email);
 
             User foundUser = await manager.FindByEmailAsync(email);
             if (foundUser == null)
@@ -114,7 +121,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
             }            
 
             return Ok();
-
         }
     }
 }
