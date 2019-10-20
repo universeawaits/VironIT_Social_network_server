@@ -9,8 +9,8 @@ namespace VironIT_Social_network_server.DAL.Context
     {
         public virtual DbSet<Avatar> Avatars { get; set; }
         public virtual DbSet<Image> Images { get; set; }
-        //public virtual DbSet<Avatar> Video { get; set; }
-        //public virtual DbSet<Avatar> Audio { get; set; }
+        //public virtual DbSet<Video> Video { get; set; }
+        public virtual DbSet<Audio> Audios { get; set; }
 
         public MediaContext()
         {

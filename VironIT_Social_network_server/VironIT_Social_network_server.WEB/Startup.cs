@@ -140,6 +140,7 @@ namespace VironIT_Social_network_server.WEB
             services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IAudioService, AudioService>();
             services.AddTransient<IEmailService, EmailService>();
 
             services.AddScoped<IUnitOfWork<MediaContext>, UnitOfWork<MediaContext>>();

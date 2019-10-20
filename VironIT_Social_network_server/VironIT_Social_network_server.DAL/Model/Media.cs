@@ -13,8 +13,11 @@
     }
 
     public class Image : Media { }
+    public class Audio : Media { }
+    public class Video : Media { }
 
-    public class Avatar : Image {
+    public class Avatar : Image
+    {
         public string SizeCategory { get; set; }
     }
 }

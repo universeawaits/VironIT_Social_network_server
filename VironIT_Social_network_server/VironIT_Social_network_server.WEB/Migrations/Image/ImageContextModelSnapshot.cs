@@ -18,6 +18,24 @@ namespace VironIT_Social_network_server.WEB.Migrations.Image
                 .HasAnnotation("ProductVersion", "3.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Audio", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Audios");
+                });
+
             modelBuilder.Entity("VironIT_Social_network_server.DAL.Model.Image", b =>
                 {
                     b.Property<int>("Id")

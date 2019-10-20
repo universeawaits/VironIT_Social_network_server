@@ -79,7 +79,6 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var largeFileStream = new FileStream(Path.Combine(largeAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(largeFileStream);
-                await largeFileStream.DisposeAsync();
                 Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
             }
 
@@ -87,7 +86,6 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var mediumFileStream = new FileStream(Path.Combine(mediumAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(mediumFileStream);
-                await mediumFileStream.DisposeAsync();
                 Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
             }
 
@@ -171,7 +169,6 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var fileStream = new FileStream(Path.Combine(fullImagePath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(fileStream);
-                await fileStream.DisposeAsync();
             }
 
             var link = "https://localhost:44345/images/" + uniqueFileName;

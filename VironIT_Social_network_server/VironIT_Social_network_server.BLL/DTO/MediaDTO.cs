@@ -7,6 +7,8 @@
     }
 
     public class ImageDTO : MediaDTO { }
+    public class AudioDTO : MediaDTO { }
+    public class VideoDTO : MediaDTO { }
 
     public class AvatarDTO : ImageDTO
     {
