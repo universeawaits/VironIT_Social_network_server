@@ -2,9 +2,12 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
@@ -49,6 +52,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     user => blockedForMe.All(
                         block => !block.BlockingUserId.Equals(user.Id))
                     );
+
             return remainUsers != null ? await ToProfile(remainUsers) : null;
         }
 
@@ -70,7 +74,8 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     Pseudonym = await contactService.GetPseudonymRawAsync(user.Id),
                     User = mapper.Map<User, UserProfileModel>(user)
                 };
-                profile.User.Avatar = (await imageService.GetMediumAvatar(user.Email)).Link;
+                AvatarDTO avatar = await imageService.GetMediumAvatar(user.Email);
+                profile.User.Avatar = avatar?.Link;
                 profiles.Add(profile);
             }
 
