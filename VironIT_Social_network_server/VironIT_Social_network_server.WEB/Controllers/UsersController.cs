@@ -31,7 +31,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpPost]
-        [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterModel user)
         {
             if (user == null)
@@ -91,8 +90,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("updateData")]
+        [HttpPut]
         public async Task<IActionResult> UpdateData([FromBody] UserEditModel user)
         {
             string email = User.FindFirstValue(ClaimTypes.Email);

@@ -25,11 +25,14 @@ namespace VironIT_Social_network_server.BLL.Services
 
         private string avatarFolder = @"images\avatars\";
         private string imagesFolder = @"images\";
+        private string linkBase;
 
         public ImageService(IUnitOfWork<MediaContext> unit, IMapper mapper)
         {
             this.unit = unit;
             this.mapper = mapper;
+
+            linkBase = "https://localhost:5001/";
         }
 
         public async Task AddAvatarAsync(AvatarDTO entity)
@@ -79,18 +82,18 @@ namespace VironIT_Social_network_server.BLL.Services
             using (var largeFileStream = new FileStream(Path.Combine(largeAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(largeFileStream);
-                Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
             }
+            Resize(Path.Combine(largeAvatarPath, uniqueFileName), largeSize);
 
             image.Position = 0;
             using (var mediumFileStream = new FileStream(Path.Combine(mediumAvatarPath, uniqueFileName), FileMode.Create))
             {
                 await image.CopyToAsync(mediumFileStream);
-                Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
             }
+            Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
 
-            var largeLink = "https://localhost:44345/images/avatars/large/" + uniqueFileName;
-            var mediumLink = "https://localhost:44345/images/avatars/medium/" + uniqueFileName;
+            var largeLink = linkBase + "images/avatars/large/" + uniqueFileName;
+            var mediumLink = linkBase + "images/avatars/medium/" + uniqueFileName;
 
             await UpdateAvatarsLinks(userEmail, largeLink, mediumLink);
         }
@@ -171,7 +174,7 @@ namespace VironIT_Social_network_server.BLL.Services
                 await image.CopyToAsync(fileStream);
             }
 
-            var link = "https://localhost:44345/images/" + uniqueFileName;
+            var link = linkBase + "images/" + uniqueFileName;
 
             DAL.Model.Image newImage = new DAL.Model.Image {
                 Link = link,

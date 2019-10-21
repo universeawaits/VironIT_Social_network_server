@@ -39,7 +39,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpGet]
-        [Route("all")]
         public async Task<IEnumerable<ContactProfileModel>> GetAllContacts()
         {
             IEnumerable<ContactDTO> contacts = await contactService.GetContacts(
@@ -73,35 +72,23 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpPost]
-        [Route("addContact")]
-        public async Task AddContact([FromBody] ContactModel contact)
+        [Route("blocks")]
+        public async Task SetContact([FromBody] BlockModel block)
         {
-            await contactService.AddContactAsync(mapper.Map<ContactModel, ContactDTO>(contact));
+            BlockDTO blockDTO = mapper.Map<BlockModel, BlockDTO>(block);
+
+            if (await contactService.IsBlocked(blockDTO.BlockingUserId, blockDTO.BlockedUserId))
+            {
+                await contactService.UnblockAsync(mapper.Map<BlockModel, BlockDTO>(block));
+            }
+            else
+            {
+                await contactService.AddBlockAsync(mapper.Map<BlockModel, BlockDTO>(block));
+            }
         }
 
         [HttpPost]
-        [Route("removeContact")]
-        public async Task RemoveContact([FromBody] ContactModel contact)
-        {
-            await contactService.RemoveContactAsync(mapper.Map<ContactModel, ContactDTO>(contact));
-        }
-
-        [HttpPost]
-        [Route("block")]
-        public async Task AddBlock([FromBody] BlockModel block)
-        {
-            await contactService.AddBlockAsync(mapper.Map<BlockModel, BlockDTO>(block));
-        }
-
-        [HttpPost]
-        [Route("unblock")]
-        public async Task Unblock([FromBody] BlockModel block)
-        {
-            await contactService.UnblockAsync(mapper.Map<BlockModel, BlockDTO>(block));
-        }
-
-        [HttpPost]
-        [Route("setPseudonym")]
+        [Route("pseudonyms")]
         public async Task SetPseudonym([FromBody] PseudonymModel pseudonym)
         {
             if (pseudonym.PseudonymRaw.Trim().Equals(""))
@@ -111,6 +98,22 @@ namespace VironIT_Social_network_server.WEB.Controllers
             else
             {
                 await contactService.SetPseudonymAsync(mapper.Map<PseudonymModel, PseudonymDTO>(pseudonym));
+            }
+        }
+
+
+        [HttpPost]
+        public async Task SetContact([FromBody] ContactModel contact)
+        {
+            ContactDTO contactDTO = mapper.Map<ContactModel, ContactDTO>(contact);
+
+            if (await contactService.IsContactedAsync(contactDTO.ContactingUserId, contactDTO.ContactedUserId))
+            {
+                await contactService.RemoveContactAsync(contactDTO);
+            }
+            else
+            {
+                await contactService.AddContactAsync(contactDTO);
             }
         }
     }

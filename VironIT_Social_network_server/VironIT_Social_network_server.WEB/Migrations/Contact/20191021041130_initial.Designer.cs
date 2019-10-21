@@ -9,7 +9,7 @@ using VironIT_Social_network_server.DAL.Context;
 namespace VironIT_Social_network_server.WEB.Migrations.Contact
 {
     [DbContext(typeof(ContactContext))]
-    [Migration("20191016202559_initial")]
+    [Migration("20191021041130_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
