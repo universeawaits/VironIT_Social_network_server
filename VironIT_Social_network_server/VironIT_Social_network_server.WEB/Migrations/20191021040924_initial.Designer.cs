@@ -10,7 +10,7 @@ using VironIT_Social_network_server.WEB.Identity;
 namespace VironIT_Social_network_server.WEB.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20191016202400_initial")]
+    [Migration("20191021040924_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

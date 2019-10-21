@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VironIT_Social_network_server.DAL.Context;
 
-namespace VironIT_Social_network_server.WEB.Migrations.Image
+namespace VironIT_Social_network_server.WEB.Migrations.Media
 {
     [DbContext(typeof(MediaContext))]
-    [Migration("20191020035440_audios")]
-    partial class audios
+    [Migration("20191021041154_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

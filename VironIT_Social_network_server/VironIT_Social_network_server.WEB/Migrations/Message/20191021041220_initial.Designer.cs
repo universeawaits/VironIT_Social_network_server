@@ -10,8 +10,8 @@ using VironIT_Social_network_server.DAL.Context;
 namespace VironIT_Social_network_server.WEB.Migrations.Message
 {
     [DbContext(typeof(MessageContext))]
-    [Migration("20191019212501_FK_null_elvis_idafsdsfdsf")]
-    partial class FK_null_elvis_idafsdsfdsf
+    [Migration("20191021041220_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,6 +60,9 @@ namespace VironIT_Social_network_server.WEB.Migrations.Message
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
 
                     b.Property<int>("MediaId")
                         .HasColumnType("integer");

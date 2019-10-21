@@ -114,7 +114,6 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpGet]
-        [Route("userdata")]
         public async Task<IActionResult> Get()
         {
             string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;

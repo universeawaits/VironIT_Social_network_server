@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,13 +37,14 @@ namespace VironIT_Social_network_server.WEB
         }
 
         public IConfiguration Configuration { get; }
+        private string angularSPAClientForlder = "../../../../client/vironit-social-network";
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<IdentityContext>(
                 options => 
                 { 
-                    options.UseNpgsql(Configuration.GetConnectionString("UsersConnection")); 
+                    options.UseNpgsql(Configuration.GetConnectionString("UsersConnection"));
                 });
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>()
@@ -147,6 +149,11 @@ namespace VironIT_Social_network_server.WEB
             services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
             services.AddScoped<IUnitOfWork<MessageContext>, UnitOfWork<MessageContext>>();
 
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = $"{angularSPAClientForlder}/dist/vironit-social-network";
+            });
+
             services.AddControllers();
         }
 
@@ -164,8 +171,12 @@ namespace VironIT_Social_network_server.WEB
                 .AllowCredentials());
             app.UseAuthentication();
             app.UseHttpsRedirection();
+
             app.UseDefaultFiles();
+
+            app.UseSpaStaticFiles();
             app.UseStaticFiles();
+
             app.Use(async (context, next) =>
             {
                 if (context.Response.StatusCode != StatusCodes.Status401Unauthorized)
@@ -178,6 +189,16 @@ namespace VironIT_Social_network_server.WEB
             {
                 builder.MapHub<MessageHub>("/hubs/message");
                 builder.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = angularSPAClientForlder;
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }

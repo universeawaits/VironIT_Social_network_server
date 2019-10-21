@@ -18,11 +18,14 @@ namespace VironIT_Social_network_server.BLL.Services
         private IMapper mapper;
 
         private string audiosFolder = @"audios\";
+        private string linkBase;
 
         public AudioService(IUnitOfWork<MediaContext> unit, IMapper mapper)
         {
             this.unit = unit;
             this.mapper = mapper;
+
+            linkBase = "https://localhost:5001/";
         }
 
         public async Task<AudioDTO> UploadAudioAsync(Stream audio, string userEmail)
@@ -44,7 +47,7 @@ namespace VironIT_Social_network_server.BLL.Services
                 await audio.CopyToAsync(fileStream);
             }
 
-            var link = "https://localhost:44345/audios/" + uniqueFileName;
+            var link = linkBase + "audios/" + uniqueFileName;
 
             Audio newAudio = new Audio 
             {
