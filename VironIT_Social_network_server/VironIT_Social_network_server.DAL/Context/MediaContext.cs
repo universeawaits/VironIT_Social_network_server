@@ -12,21 +12,13 @@ namespace VironIT_Social_network_server.DAL.Context
         public virtual DbSet<Video> Videos { get; set; }
         public virtual DbSet<Audio> Audios { get; set; }
 
-        public MediaContext()
-        {
-        }
+        public MediaContext() { }
 
         public MediaContext(DbContextOptions<MediaContext> options)
-            : base(options)
-        {
-        }
+            : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-        }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder) { }
     }
 }

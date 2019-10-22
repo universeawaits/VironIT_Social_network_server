@@ -67,7 +67,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
                 bool isEmailSent = await emailService.SendAsync(
                     newUser.Email, 
                     "registration", 
-                    $"dear {newUser.UserName}, welcome to the herns"
+                    $"dear {newUser.UserName}, welcome to the skies"
                     );
                 if (!isEmailSent)
                 {
