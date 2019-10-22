@@ -23,6 +23,7 @@ namespace VironIT_Social_network_server.DAL.Model
         public DateTime DateTime { get; set; }
         public string Text { get; set; }
         public string ForwardFromEmail { get; set; }
+        public string Type { get; set; }
 
         public MessageMedia MessageMedia { get; set; }
         public int? MessageMediaId { get; set; }

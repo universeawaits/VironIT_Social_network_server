@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ImageProcessor;
 using ImageProcessor.Imaging.Formats;
+
 using System;
 using System.Drawing;
 using System.IO;
@@ -32,7 +33,7 @@ namespace VironIT_Social_network_server.BLL.Services
             this.unit = unit;
             this.mapper = mapper;
 
-            linkBase = "https://localhost:5001/";
+            linkBase = "https://localhost:44345/";
         }
 
         public async Task AddAvatarAsync(AvatarDTO entity)

@@ -10,6 +10,8 @@ namespace VironIT_Social_network_server.BLL.DTO
         public DateTime DateTime { get; set; }
         public string Text { get; set; }
         public string ForwardFromEmail { get; set; }
+        public string Type { get; set; }
+
         public MessageMediaDTO MessageMedia { get; set; }
     }
 

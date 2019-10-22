@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using VironIT_Social_network_server.BLL.DTO;
-using VironIT_Social_network_server.BLL.Services;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.ViewModels;
@@ -64,7 +61,8 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     Pseudonym = await contactService.GetPseudonymRawAsync(contacted.Id),
                     User = mapper.Map<User, UserProfileModel>(contacted)
                 };
-                profile.User.Avatar = (await imageService.GetMediumAvatar(contacted.Email)).Link;
+                AvatarDTO avatar = await imageService.GetMediumAvatar(contacted.Email);
+                profile.User.Avatar = avatar?.Link;
                 profiles.Add(profile);
             }
 

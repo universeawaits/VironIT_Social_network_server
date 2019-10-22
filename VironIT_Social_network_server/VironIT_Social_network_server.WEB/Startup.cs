@@ -37,7 +37,7 @@ namespace VironIT_Social_network_server.WEB
         }
 
         public IConfiguration Configuration { get; }
-        private string angularSPAClientForlder = "../../../../client/vironit-social-network";
+        private string angularSPAClientForlder = "..\\..\\..\\..\\client\\vironit-social-network";
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -151,7 +151,7 @@ namespace VironIT_Social_network_server.WEB
 
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = $"{angularSPAClientForlder}/dist/vironit-social-network";
+                configuration.RootPath = $"{angularSPAClientForlder}\\dist\\vironit-social-network";
             });
 
             services.AddControllers();

@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
+
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.DAL.Context;
 using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.UnitOfWork;
+
 
 namespace VironIT_Social_network_server.BLL.Services
 {
@@ -25,7 +26,7 @@ namespace VironIT_Social_network_server.BLL.Services
             this.unit = unit;
             this.mapper = mapper;
 
-            linkBase = "https://localhost:5001/";
+            linkBase = "https://localhost:44345/";
         }
 
         public async Task<AudioDTO> UploadAudioAsync(Stream audio, string userEmail)
