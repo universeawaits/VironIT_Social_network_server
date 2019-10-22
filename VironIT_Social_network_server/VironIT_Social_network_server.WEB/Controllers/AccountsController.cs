@@ -4,12 +4,12 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Claims;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 
 using VironIT_Social_network_server.WEB.Identity.JWT;
@@ -116,18 +116,19 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.FindFirstValue(ClaimTypes.Email);
 
-            User foundUser = await manager.FindByEmailAsync(email);
-            if (foundUser != null)
+            if (email != null)
             {
+                User foundUser = await manager.FindByEmailAsync(email);
+
                 UserProfileModel profile = mapper.Map<User, UserProfileModel>(foundUser);
                 profile.Avatar = (await imageService.GetLargeAvatar(foundUser.Email))?.Link;
                 return Ok(profile);
             }
             else
             {
-                return BadRequest("email is not valid");
+                return Unauthorized();
             }
         }
 
@@ -135,7 +136,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         [Route("logout")]
         public async Task Logout()
         {
-            string email = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value;
+            string email = User.FindFirstValue(ClaimTypes.Email);
             User foundUser = await manager.FindByEmailAsync(email);
 
             foundUser.LastSeen = DateTime.Now;

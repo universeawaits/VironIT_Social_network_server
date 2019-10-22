@@ -25,7 +25,10 @@ namespace VironIT_Social_network_server.WEB.Controllers
         private IImageService imageService;
         private IMapper mapper;
 
-        public SearchController(UserManager<User> manager, IContactService contactService, IMapper mapper, IImageService imageService)
+        public SearchController(
+            UserManager<User> manager, IContactService contactService, 
+            IMapper mapper, IImageService imageService
+            )
         {
             this.manager = manager;
             this.contactService = contactService;
