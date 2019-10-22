@@ -25,9 +25,6 @@ namespace VironIT_Social_network_server.WEB
                 dest => dest.Phone,
                 options => options.MapFrom(src => manager.FindByIdAsync(src.Id).Result.PhoneNumber)
                 );
-
-            //CreateMap<ContactDTO, ContactModel>();
-
             CreateMap<ContactModel, ContactDTO>().ForMember(
                 dest => dest.ContactedUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactedUserEmail).Result.Id)
@@ -35,7 +32,6 @@ namespace VironIT_Social_network_server.WEB
                 dest => dest.ContactingUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.ContactingUserEmail).Result.Id)
                 );
-            //CreateMap<BlockDTO, BlockModel>();
             CreateMap<BlockModel, BlockDTO>().ForMember(
                 dest => dest.BlockedUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockedUserEmail).Result.Id)
@@ -43,7 +39,6 @@ namespace VironIT_Social_network_server.WEB
                 dest => dest.BlockingUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.BlockingUserEmail).Result.Id)
                 );
-            //CreateMap<PseudonymDTO, PseudonymModel>();
             CreateMap<PseudonymModel, PseudonymDTO>().ForMember(
                 dest => dest.PseudoFromUserId,
                 options => options.MapFrom(src => manager.FindByEmailAsync(src.PseudoFromUserEmail).Result.Id)

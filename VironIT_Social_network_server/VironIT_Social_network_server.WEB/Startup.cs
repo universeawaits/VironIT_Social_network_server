@@ -119,11 +119,6 @@ namespace VironIT_Social_network_server.WEB
                         {
                             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                             return Task.CompletedTask;
-                        },
-                        OnTokenValidated = context =>
-                        {
-                            
-                            return Task.CompletedTask;
                         }
                     };
                 }
@@ -139,11 +134,12 @@ namespace VironIT_Social_network_server.WEB
                     cfg.AddProfile(new BLLMapperProfile());
                 }).CreateMapper());
 
-            services.AddTransient<IImageService, ImageService>();
+            services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IContactService, ContactService>();
             services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IImageService, ImageService>();
             services.AddTransient<IAudioService, AudioService>();
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IVideoService, VideoService>();
 
             services.AddScoped<IUnitOfWork<MediaContext>, UnitOfWork<MediaContext>>();
             services.AddScoped<IUnitOfWork<ContactContext>, UnitOfWork<ContactContext>>();
@@ -173,7 +169,6 @@ namespace VironIT_Social_network_server.WEB
             app.UseHttpsRedirection();
 
             app.UseDefaultFiles();
-
             app.UseSpaStaticFiles();
             app.UseStaticFiles();
 
@@ -190,7 +185,6 @@ namespace VironIT_Social_network_server.WEB
                 builder.MapHub<MessageHub>("/hubs/message");
                 builder.MapControllers();
             });
-
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = angularSPAClientForlder;

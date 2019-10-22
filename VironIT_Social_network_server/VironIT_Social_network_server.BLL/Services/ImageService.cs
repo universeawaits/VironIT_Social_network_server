@@ -26,14 +26,11 @@ namespace VironIT_Social_network_server.BLL.Services
 
         private string avatarFolder = @"images\avatars\";
         private string imagesFolder = @"images\";
-        private string linkBase;
 
         public ImageService(IUnitOfWork<MediaContext> unit, IMapper mapper)
         {
             this.unit = unit;
             this.mapper = mapper;
-
-            linkBase = "https://localhost:44345/";
         }
 
         public async Task AddAvatarAsync(AvatarDTO entity)
@@ -93,8 +90,8 @@ namespace VironIT_Social_network_server.BLL.Services
             }
             Resize(Path.Combine(mediumAvatarPath, uniqueFileName), mediumSize);
 
-            var largeLink = linkBase + "images/avatars/large/" + uniqueFileName;
-            var mediumLink = linkBase + "images/avatars/medium/" + uniqueFileName;
+            var largeLink = "images/avatars/large/" + uniqueFileName;
+            var mediumLink = "images/avatars/medium/" + uniqueFileName;
 
             await UpdateAvatarsLinks(userEmail, largeLink, mediumLink);
         }
@@ -106,6 +103,11 @@ namespace VironIT_Social_network_server.BLL.Services
                     image.UserEmail.Equals(userEmail) && 
                     image.SizeCategory.Equals(AvatarSizeCategory.Large)
                 );
+
+            if (large == null)
+            {
+                return;
+            }
 
             if (large.Link.Equals(""))
             {
@@ -175,7 +177,7 @@ namespace VironIT_Social_network_server.BLL.Services
                 await image.CopyToAsync(fileStream);
             }
 
-            var link = linkBase + "images/" + uniqueFileName;
+            var link = "images/" + uniqueFileName;
 
             DAL.Model.Image newImage = new DAL.Model.Image {
                 Link = link,

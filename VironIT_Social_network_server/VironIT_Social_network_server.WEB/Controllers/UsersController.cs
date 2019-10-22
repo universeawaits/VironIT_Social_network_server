@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
+using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.WEB.Identity;
 using VironIT_Social_network_server.WEB.IdentityProvider;
 using VironIT_Social_network_server.WEB.ViewModels;
@@ -63,22 +64,28 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
             if (result.Succeeded)
             {
-                await emailService.SendAsync(
+                bool isEmailSent = await emailService.SendAsync(
                     newUser.Email, 
                     "registration", 
                     $"dear {newUser.UserName}, welcome to the skies"
                     );
+                if (!isEmailSent)
+                {
+                    await manager.DeleteAsync(newUser);
+                    return BadRequest("no internet connection (can't send confirmation email)");
+                }
+
                 await imageSrevice.AddAvatarAsync(new AvatarDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,
-                    SizeCategory = "Large"
+                    SizeCategory = AvatarSizeCategory.Large
                 });
                 await imageSrevice.AddAvatarAsync(new AvatarDTO
                 {
                     Link = "",
                     UserEmail = newUser.Email,
-                    SizeCategory = "Medium"
+                    SizeCategory = AvatarSizeCategory.Medium
                 });
 
                 return Created("users", "registered successfully");
@@ -94,12 +101,12 @@ namespace VironIT_Social_network_server.WEB.Controllers
         public async Task<IActionResult> UpdateData([FromBody] UserEditModel user)
         {
             string email = User.FindFirstValue(ClaimTypes.Email);
-
-            User foundUser = await manager.FindByEmailAsync(email);
-            if (foundUser == null)
+            if (email == null)
             {
                 return Unauthorized();
             }
+
+            User foundUser = await manager.FindByEmailAsync(email);
 
             foundUser.UserName = user.Name;
             await manager.UpdateAsync(foundUser);

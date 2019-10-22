@@ -21,7 +21,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateAvatar([FromForm(Name = "file")] IFormFile audio)
+        public async Task<IActionResult> UploadAudio([FromForm(Name = "file")] IFormFile audio)
         {
             if (audio != null)
             {

@@ -2,7 +2,9 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using AutoMapper;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -68,7 +70,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
             return profiles;
         }
-
+        
         [HttpPost]
         [Route("blocks")]
         public async Task SetContact([FromBody] BlockModel block)

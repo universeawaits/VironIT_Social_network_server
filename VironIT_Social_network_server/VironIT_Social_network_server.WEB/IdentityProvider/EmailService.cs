@@ -1,6 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
-
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 
@@ -8,31 +8,40 @@ namespace VironIT_Social_network_server.WEB.IdentityProvider
 {
     public interface IEmailService
     {
-        Task SendAsync(string to, string subject, string body);
+        Task<bool> SendAsync(string to, string subject, string body);
     }
 
     public class EmailService : IEmailService
     {
-        public async Task SendAsync(string to, string subject, string body)
+        public async Task<bool> SendAsync(string to, string subject, string body)
         {
-            var emailMessage = new MimeMessage();
+            var email = new MimeMessage();
 
-            emailMessage.From.Add(new MailboxAddress("skies", ""));
-            emailMessage.To.Add(new MailboxAddress("", to));
-            emailMessage.Subject = subject;
-            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            email.From.Add(new MailboxAddress("skies", ""));
+            email.To.Add(new MailboxAddress("", to));
+            email.Subject = subject;
+            email.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
                 Text = body
             };
 
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.gmail.com", 587);
-                await client.AuthenticateAsync("myowngollum@gmail.com", "opend00r");
-                await client.SendAsync(emailMessage);
+                try
+                {
+                    await client.ConnectAsync("smtp.gmail.com", 587);
+                    await client.AuthenticateAsync("myowngollum@gmail.com", "opend00r");
+                    await client.SendAsync(email);
 
-                await client.DisconnectAsync(true);
+                    await client.DisconnectAsync(true);
+                } 
+                catch (SocketException)
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
     }
 }
