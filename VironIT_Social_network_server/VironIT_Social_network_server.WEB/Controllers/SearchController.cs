@@ -56,30 +56,45 @@ namespace VironIT_Social_network_server.WEB.Controllers
             return remainUsers != null ? await ToProfile(remainUsers) : null;
         }
 
+        [HttpGet]
+        public async Task<ContactProfileModel> SearchByFullEmail([FromQuery(Name = "email")] string email)
+        {
+            string currUserId = (await manager.FindByEmailAsync(
+                User.FindFirstValue(ClaimTypes.Email))).Id;
+            ContactProfileModel found = await ToProfile(await manager.FindByEmailAsync(email), currUserId);
+
+            return found;
+        }
+
         private async Task<IEnumerable<ContactProfileModel>> ToProfile(IEnumerable<User> users)
         {
             ICollection<ContactProfileModel> profiles = new List<ContactProfileModel>();
             string currUserId = (await manager.FindByEmailAsync(
-                User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email).Value))
-                .Id;
+                User.FindFirstValue(ClaimTypes.Email))).Id;
 
             foreach (User user in users)
             {
-                ContactProfileModel profile = new ContactProfileModel
-                {
-                    IsBlocked = await contactService.IsBlocked(currUserId, user.Id),
-                    IsContact = await contactService.IsContactedAsync(currUserId, user.Id),
-                    IsOnline = user.IsOnline,
-                    LastSeen = user.LastSeen,
-                    Pseudonym = await contactService.GetPseudonymRawAsync(user.Id),
-                    User = mapper.Map<User, UserProfileModel>(user)
-                };
-                AvatarDTO avatar = await imageService.GetMediumAvatar(user.Email);
-                profile.User.Avatar = avatar?.Link;
-                profiles.Add(profile);
+                profiles.Add(await ToProfile(user, currUserId));
             }
 
             return profiles;
+        }
+
+        private async Task<ContactProfileModel> ToProfile(User user, string currUserId)
+        {
+            ContactProfileModel profile = new ContactProfileModel
+            {
+                IsBlocked = await contactService.IsBlocked(currUserId, user.Id),
+                IsContact = await contactService.IsContactedAsync(currUserId, user.Id),
+                IsOnline = user.IsOnline,
+                LastSeen = user.LastSeen,
+                Pseudonym = await contactService.GetPseudonymRawAsync(user.Id),
+                User = mapper.Map<User, UserProfileModel>(user)
+            };
+            AvatarDTO avatar = await imageService.GetMediumAvatar(user.Email);
+            profile.User.Avatar = avatar?.Link;
+
+            return profile;
         }
     }
 }

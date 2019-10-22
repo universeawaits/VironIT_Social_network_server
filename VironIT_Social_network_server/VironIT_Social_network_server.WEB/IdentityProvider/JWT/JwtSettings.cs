@@ -1,7 +1,4 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-namespace VironIT_Social_network_server.WEB.Identity.JWT
+﻿namespace VironIT_Social_network_server.WEB.Identity.JWT
 {
     public class JwtOptions
     {

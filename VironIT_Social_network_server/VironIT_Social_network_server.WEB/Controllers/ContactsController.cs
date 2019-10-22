@@ -68,7 +68,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
 
             return profiles;
         }
-
+        
         [HttpPost]
         [Route("blocks")]
         public async Task SetContact([FromBody] BlockModel block)

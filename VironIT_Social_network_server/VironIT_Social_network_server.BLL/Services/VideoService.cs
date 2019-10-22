@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
+
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 using VironIT_Social_network_server.DAL.Context;
 using VironIT_Social_network_server.DAL.Model;
 using VironIT_Social_network_server.DAL.UnitOfWork;
+
 
 namespace VironIT_Social_network_server.BLL.Services
 {
@@ -18,14 +19,11 @@ namespace VironIT_Social_network_server.BLL.Services
         private IMapper mapper;
 
         private string videosFolder = @"videos\";
-        private string linkBase;
 
         public VideoService(IUnitOfWork<MediaContext> unit, IMapper mapper)
         {
             this.unit = unit;
             this.mapper = mapper;
-
-            linkBase = "https://localhost:44345/";
         }
 
         public async Task<VideoDTO> UploadVideoAsync(Stream video, string userEmail)
@@ -47,7 +45,7 @@ namespace VironIT_Social_network_server.BLL.Services
                 await video.CopyToAsync(fileStream);
             }
 
-            var link = linkBase + "videos/" + uniqueFileName;
+            var link = "videos/" + uniqueFileName;
 
             Video newVideo = new Video
             {
