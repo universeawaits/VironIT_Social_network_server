@@ -122,7 +122,7 @@ namespace VironIT_Social_network_server.WEB.Controllers
             if (foundUser != null)
             {
                 UserProfileModel profile = mapper.Map<User, UserProfileModel>(foundUser);
-                profile.Avatar = (await imageService.GetLargeAvatar(foundUser.Email)).Link;
+                profile.Avatar = (await imageService.GetLargeAvatar(foundUser.Email))?.Link;
                 return Ok(profile);
             }
             else

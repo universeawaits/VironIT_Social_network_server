@@ -1,35 +1,36 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using VironIT_Social_network_server.BLL.DTO;
 using VironIT_Social_network_server.BLL.Services.Interface;
 
-
 namespace VironIT_Social_network_server.WEB.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class AudiosController : ControllerBase
+    public class VideosController : ControllerBase
     {
-        private IAudioService audioService;
+        private IVideoService videoService;
 
-        public AudiosController(IAudioService audioService)
+        public VideosController(IVideoService videoService)
         {
-            this.audioService = audioService;
+            this.videoService = videoService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadAudio([FromForm(Name = "file")] IFormFile audio)
+        public async Task<IActionResult> UploadVideo([FromForm(Name = "file")] IFormFile audio)
         {
             if (audio != null)
             {
-                AudioDTO uploadedAudio = await audioService.UploadAudioAsync(
+                VideoDTO uploadedVideo = await videoService.UploadVideoAsync(
                     audio.OpenReadStream(),
                     User.FindFirstValue(ClaimTypes.Email)
                     );
-                return Created("/audios", uploadedAudio);
+                return Created("/videos", uploadedVideo);
             }
 
             return BadRequest();

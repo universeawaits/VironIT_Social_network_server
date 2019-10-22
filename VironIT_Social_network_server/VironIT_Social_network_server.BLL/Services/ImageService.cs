@@ -107,6 +107,11 @@ namespace VironIT_Social_network_server.BLL.Services
                     image.SizeCategory.Equals(AvatarSizeCategory.Large)
                 );
 
+            if (large == null)
+            {
+                return;
+            }
+
             if (large.Link.Equals(""))
             {
                 Avatar medium = await unit.Repository<Avatar>().GetEntityByFilter(

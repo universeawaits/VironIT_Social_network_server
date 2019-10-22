@@ -28,6 +28,8 @@ namespace VironIT_Social_network_server.BLL
             CreateMap<MessageMedia, MessageMediaDTO>();
             CreateMap<Audio, AudioDTO>();
             CreateMap<AudioDTO, Audio>();
+            CreateMap<Video, VideoDTO>();
+            CreateMap<VideoDTO, Video>();
         }
     }
 }
