@@ -71,7 +71,8 @@ namespace VironIT_Social_network_server.WEB.Controllers
                     );
                 if (!isEmailSent)
                 {
-                    return BadRequest("no internet connection");
+                    await manager.DeleteAsync(newUser);
+                    return BadRequest("no internet connection (can't send confirmation email)");
                 }
 
                 await imageSrevice.AddAvatarAsync(new AvatarDTO
