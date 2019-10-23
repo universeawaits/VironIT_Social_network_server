@@ -30,7 +30,7 @@ namespace VironIT_Social_network_server.WEB.IdentityProvider
                 try
                 {
                     await client.ConnectAsync("smtp.gmail.com", 587);
-                    await client.AuthenticateAsync("myowngollum@gmail.com", "opend00r");
+                    await client.AuthenticateAsync("user@gmail.com", "password");
                     await client.SendAsync(email);
 
                     await client.DisconnectAsync(true);
